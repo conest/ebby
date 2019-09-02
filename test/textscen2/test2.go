@@ -1,9 +1,8 @@
 package textscen2
 
 import (
-	"campaign/control/datastruct"
-	"campaign/control/order"
-	"campaign/scenario"
+	"campaign/control/scenario"
+	"campaign/control/strdef"
 	"fmt"
 	"time"
 
@@ -12,7 +11,7 @@ import (
 
 const (
 	// rps : 执行部分刷新速率
-	rps = 1
+	rps = 2
 )
 
 // Scenario : 返回该实例（一般不需要修改）
@@ -24,26 +23,47 @@ func Scenario() *scenario.Scenario {
 
 // instance : 数据实例，可以自定义
 type instance struct {
-	sdata *datastruct.ShareData
+	sdata *strdef.ShareData
+	data  *customData
+}
+
+// customData : 自定义数据格式
+type customData struct {
+	ticker *time.Ticker
 }
 
 // SetSData : 设置共享数据指针
-func (i *instance) SetSData(sdata *datastruct.ShareData) {
+func (i *instance) SetSData(sdata *strdef.ShareData) {
 	i.sdata = sdata
+}
+
+// ResetData : 重置自定义数据
+func (i *instance) ResetData() {
+	i.data = &customData{}
 }
 
 func (i *instance) Initial(w *pixelgl.Window) {
 	logger := i.sdata.Tool.DebugLogger
-	fmt.Fprintln(logger, "Now, print Latin only")
+	fmt.Fprintln(logger, "Here is Test 2")
+	i.data.ticker = time.NewTicker(2 * time.Second)
+
 }
 
-func (i *instance) Excuter(dt float64) *order.Request {
+func (i *instance) Excuter(dt float64) strdef.Request {
 	logger := i.sdata.Tool.DebugLogger
-	fmt.Fprintf(logger, "%v\n", time.Now().String())
-	r := &order.Request{
-		Continue: true,
+
+	r := strdef.DefaultRequest()
+	select {
+	case <-i.data.ticker.C:
+		r.Continue = false
+		r.ResetData = true
+		r.NextScenario = "test"
+		return r
+	default:
 	}
-	i.sdata.Tool.Logger.Info("hehe")
+
+	fmt.Fprintf(logger, "%v\n", time.Now().String())
+
 	return r
 }
 

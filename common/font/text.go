@@ -40,7 +40,7 @@ func loadTTF(path string, size float64) (font.Face, error) {
 func errLog(err error) {
 	if err != nil {
 		log := logger.New()
-		log.Error(fmt.Sprintf("[%s] %v", errdef.FontLoadFile.Str, err))
+		log.Error(fmt.Sprintf("[common/font]<%s> %v", errdef.FontLoadFile.Str, err))
 		panic(err)
 	}
 }

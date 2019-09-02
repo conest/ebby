@@ -3,7 +3,10 @@ package control
 import (
 	"campaign/common/font"
 	"campaign/common/logger"
-	"campaign/control/datastruct"
+	"campaign/control/scenario"
+	"campaign/control/strdef"
+	"campaign/errdef"
+	"fmt"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -20,14 +23,14 @@ const (
 type Control struct {
 	win       *pixelgl.Window
 	config    *viper.Viper
-	sdata     *datastruct.ShareData
+	sdata     *strdef.ShareData
 	scenarios ScenarioListMap
 	now       string
 }
 
 // New : 返回新的控制中心类
 func New(win *pixelgl.Window, config *viper.Viper) *Control {
-	sdata := &datastruct.ShareData{}
+	sdata := &strdef.ShareData{}
 	c := &Control{
 		win:       win,
 		config:    config,
@@ -41,7 +44,7 @@ func New(win *pixelgl.Window, config *viper.Viper) *Control {
 // Init : 初始化
 func (c *Control) Init() {
 	c.sdata.Tool.Logger = logger.New()
-	c.sdata.Tool.Logger.Info("Started")
+	c.sdata.Tool.Logger.Info("[Control Center] Started")
 }
 
 // DebugMode : 使用 debug 模式
@@ -57,8 +60,14 @@ func (c *Control) DebugMode() {
 
 // Run : 运行 scenario
 func (c *Control) Run() {
+	r := strdef.DefaultRequest()
 	for {
-		r := c.scenarios[c.now].Run(c.win)
+		s, ok := c.scenarios[c.now]
+		checkScenario(ok, c.now)
+
+		initScenario(s, r, c.win)
+		r = s.Run(c.win)
+
 		if r.Terminate {
 			return
 		}
@@ -68,5 +77,22 @@ func (c *Control) Run() {
 
 // BeforeExit : 关闭前行为（保存数据等）
 func (c *Control) BeforeExit() {
-	c.sdata.Tool.Logger.Info("Ternimated")
+	c.sdata.Tool.Logger.Info("[control] Ternimated")
+}
+
+func initScenario(s *scenario.Scenario, r strdef.Request, win *pixelgl.Window) {
+	if r.ResetData {
+		s.ResetData()
+		s.Initial(win)
+	}
+}
+
+// checkScenario : 检测对应的scenario是否存在
+func checkScenario(ok bool, id string) {
+	if !ok {
+		log := logger.New()
+		errString := fmt.Sprintf("[control]<%s> %v", errdef.NoScenario.Str, id)
+		log.Error(errString)
+		panic(errString)
+	}
 }

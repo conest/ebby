@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"campaign/config"
+	"campaign/common/cfgloader"
 	"os"
 
 	"github.com/sirupsen/logrus"
@@ -10,13 +10,13 @@ import (
 // New : logger
 func New() *logrus.Logger {
 
-	config := config.Init()
-
 	log := logrus.New()
 
 	log.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
+
+	config := cfgloader.Init()
 
 	if config.GetString("logger.level") == "debug" {
 		log.SetLevel(logrus.DebugLevel)
