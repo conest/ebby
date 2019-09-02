@@ -1,4 +1,4 @@
-package datastruct
+package strdef
 
 import (
 	"github.com/faiface/pixel/text"

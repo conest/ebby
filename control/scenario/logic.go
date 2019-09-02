@@ -1,7 +1,7 @@
 package scenario
 
 import (
-	"campaign/control/order"
+	"campaign/control/strdef"
 	"fmt"
 	"time"
 
@@ -12,11 +12,10 @@ import (
 )
 
 // Run : 主运行
-func (s *Scenario) Run(w *pixelgl.Window) *order.Request {
+func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 
-	var req *order.Request
-	s.ins.Initial(w)
-
+	req := strdef.DefaultRequest()
+	last := time.Now()
 	// DEBUG: debug mode
 	// fps
 	var (
@@ -25,12 +24,10 @@ func (s *Scenario) Run(w *pixelgl.Window) *order.Request {
 		fpsTxt    = text.New(pixel.V(4, 4), s.sdata.Resource.DebugAtlas)
 	)
 
-	last := time.Now()
-
 	// 执行循环
 	for {
 		if w.Closed() {
-			req = &order.Request{Terminate: true}
+			req = strdef.Request{Terminate: true}
 			return req
 		}
 
@@ -56,13 +53,13 @@ func (s *Scenario) Run(w *pixelgl.Window) *order.Request {
 }
 
 // excute : 数据执行
-func (s *Scenario) excute(dt float64) *order.Request {
+func (s *Scenario) excute(dt float64) strdef.Request {
 	select {
 	case <-s.eTicker.C:
 		r := s.ins.Excuter(dt)
 		return r
 	default:
-		return &order.Request{Continue: true}
+		return strdef.Request{Continue: true}
 	}
 }
 

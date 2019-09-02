@@ -1,7 +1,7 @@
 package control
 
 import (
-	"campaign/config"
+	"campaign/common/cfgloader"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -10,7 +10,7 @@ import (
 // Enter : 创建窗口并初始化控制中心
 func Enter() {
 
-	config := config.Init()
+	config := cfgloader.Init()
 
 	title := config.GetString("screen.title")
 	screenX := config.GetFloat64("screen.rX")
@@ -27,6 +27,8 @@ func Enter() {
 	if err != nil {
 		panic(err)
 	}
+
+	// win.SetCursorVisible(false)
 
 	// 创建新的控制中心
 	c := New(win, config)
