@@ -1,7 +1,7 @@
 package main
 
 import (
-	"campaign/control"
+	"ebby/control"
 
 	"github.com/faiface/pixel/pixelgl"
 )

@@ -1,7 +1,7 @@
 package control
 
 import (
-	"campaign/common/cfgloader"
+	"ebby/common/cfgloader"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
