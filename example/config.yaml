@@ -1,17 +1,20 @@
 # 配置文件
 
-runningMode: debug
+mode: debug
 
 screen:
   rX: 1024
   rY: 800
-  title: Campaign
+  title: Ebby
   VSync:  False
 
 scenario:
-  # 最高循环速率，以在屏幕不显示时避免高速loop导致消耗大量cpu
+  # 最高循环速率限制，以在屏幕不显示时避免高速loop导致消耗大量cpu
   # 该功能可能会使垂直同步失效
+  # 单位: frames / second
   maxRate: 60
+  # 入口场景名称
+  entry: test
 
 logger:
   level: debug

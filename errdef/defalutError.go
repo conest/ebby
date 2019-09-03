@@ -6,6 +6,11 @@ type errStruct struct {
 }
 
 var (
+	// CreateWindow :
+	CreateWindow = errStruct{
+		ID:  "CreateWindow",
+		Str: "Window创建失败",
+	}
 	// FontLoadFile :
 	FontLoadFile = errStruct{
 		ID:  "FontLoadFile",

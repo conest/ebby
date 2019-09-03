@@ -33,7 +33,7 @@ type customData struct {
 	ticker *time.Ticker
 }
 
-// SetSData : 设置共享数据指针
+// SetSData : 设置共享数据
 func (i *instance) SetSData(sdata *strdef.ShareData) {
 	i.sdata = sdata
 }
@@ -43,6 +43,7 @@ func (i *instance) ResetData() {
 	i.data = &customData{}
 }
 
+// Initial : 初始化场景
 func (i *instance) Initial(w *pixelgl.Window) {
 	logger := i.sdata.Tool.DebugLogger
 	fmt.Fprintln(logger, "Here is Test 1")

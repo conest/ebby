@@ -2,14 +2,30 @@ package control
 
 import (
 	"ebby/common/cfgloader"
+	"ebby/common/logger"
+	"ebby/errdef"
+	"fmt"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/spf13/viper"
 )
 
 // Enter : 创建窗口并初始化控制中心
-func Enter() {
+func Enter(sm ScenarioMap, fn *Functions) {
 
+	config, win := setWindow()
+
+	// 创建新的控制中心
+	c := New(win, config, sm)
+	c.SetFunctions(fn)
+	c.DebugMode()
+	c.Init()
+	c.Run()
+	c.BeforeExit()
+}
+
+func setWindow() (*viper.Viper, *pixelgl.Window) {
 	config := cfgloader.Init()
 
 	title := config.GetString("screen.title")
@@ -24,16 +40,16 @@ func Enter() {
 	}
 
 	win, err := pixelgl.NewWindow(cfg)
+	checkErr(err)
+
+	return config, win
+}
+
+func checkErr(err error) {
 	if err != nil {
-		panic(err)
+		log := logger.New()
+		errString := fmt.Sprintf("[Enter]<%s> %v", errdef.CreateWindow.Str, err)
+		log.Error(errString)
+		panic(errString)
 	}
-
-	// win.SetCursorVisible(false)
-
-	// 创建新的控制中心
-	c := New(win, config)
-	c.DebugMode()
-	c.Init()
-	c.Run()
-	c.BeforeExit()
 }

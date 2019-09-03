@@ -2,11 +2,7 @@ package control
 
 import (
 	"ebby/common/font"
-	"ebby/common/logger"
-	"ebby/control/scenario"
 	"ebby/control/strdef"
-	"ebby/errdef"
-	"fmt"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -14,37 +10,54 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	// DEBUG: test -> start
-	iniScenario = "test"
-)
-
 // Control : 控制中心
 type Control struct {
 	win       *pixelgl.Window
 	config    *viper.Viper
 	sdata     *strdef.ShareData
-	scenarios ScenarioListMap
+	scenarios ScenarioMap
 	now       string
+	fn        *Functions
+}
+
+// Functions : 外部加载函数
+type Functions struct {
+	Ini  func(*Control)
+	Bfex func(*Control)
 }
 
 // New : 返回新的控制中心类
-func New(win *pixelgl.Window, config *viper.Viper) *Control {
+func New(win *pixelgl.Window, config *viper.Viper, sm ScenarioMap) *Control {
 	sdata := &strdef.ShareData{}
 	c := &Control{
 		win:       win,
 		config:    config,
 		sdata:     sdata,
-		scenarios: ScenarioList(sdata, config),
-		now:       iniScenario,
+		scenarios: loadScenarios(sm, sdata, config),
+		now:       config.GetString("scenario.entry"),
+		fn:        &Functions{},
 	}
 	return c
 }
 
+// SData : 取得 SData
+func (c *Control) SData() *strdef.ShareData {
+	return c.sdata
+}
+
+// SetFunctions : 设置外部函数
+func (c *Control) SetFunctions(fn *Functions) {
+	c.fn = fn
+}
+
 // Init : 初始化
 func (c *Control) Init() {
-	c.sdata.Tool.Logger = logger.New()
-	c.sdata.Tool.Logger.Info("[Control Center] Started")
+	c.fn.Ini(c)
+}
+
+// BeforeExit : 关闭前行为（保存数据等）
+func (c *Control) BeforeExit() {
+	c.fn.Bfex(c)
 }
 
 // DebugMode : 使用 debug 模式
@@ -72,27 +85,5 @@ func (c *Control) Run() {
 			return
 		}
 		c.now = r.NextScenario
-	}
-}
-
-// BeforeExit : 关闭前行为（保存数据等）
-func (c *Control) BeforeExit() {
-	c.sdata.Tool.Logger.Info("[control] Ternimated")
-}
-
-func initScenario(s *scenario.Scenario, r strdef.Request, win *pixelgl.Window) {
-	if r.ResetData {
-		s.ResetData()
-		s.Initial(win)
-	}
-}
-
-// checkScenario : 检测对应的scenario是否存在
-func checkScenario(ok bool, id string) {
-	if !ok {
-		log := logger.New()
-		errString := fmt.Sprintf("[control]<%s> %v", errdef.NoScenario.Str, id)
-		log.Error(errString)
-		panic(errString)
 	}
 }
