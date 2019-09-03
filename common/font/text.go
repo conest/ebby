@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"campaign/common/logger"
-	"campaign/errdef"
+	"ebby/common/logger"
+	"ebby/errdef"
 
 	"github.com/faiface/pixel/text"
 	"github.com/golang/freetype/truetype"
@@ -47,8 +47,8 @@ func errLog(err error) {
 
 // GetAtlas : 获取字体 Atlas
 // TODO: 字体部分还需要详细调整
-func GetAtlas() *text.Atlas {
-	face, err := loadTTF("resource/font/FZXIANGSU16.TTF", 16)
+func GetAtlas(path string, size float64) *text.Atlas {
+	face, err := loadTTF(path, size)
 	errLog(err)
 
 	return text.NewAtlas(face, text.ASCII)

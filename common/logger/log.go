@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"campaign/common/cfgloader"
+	"ebby/common/cfgloader"
 	"os"
 
 	"github.com/sirupsen/logrus"

@@ -1,10 +1,10 @@
 package control
 
 import (
-	"campaign/control/scenario"
-	"campaign/control/strdef"
-	"campaign/test/textscen"
-	"campaign/test/textscen2"
+	"ebby/control/scenario"
+	"ebby/control/strdef"
+	"ebby/test/textscen"
+	"ebby/test/textscen2"
 
 	"github.com/spf13/viper"
 )

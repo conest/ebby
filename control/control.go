@@ -1,11 +1,11 @@
 package control
 
 import (
-	"campaign/common/font"
-	"campaign/common/logger"
-	"campaign/control/scenario"
-	"campaign/control/strdef"
-	"campaign/errdef"
+	"ebby/common/font"
+	"ebby/common/logger"
+	"ebby/control/scenario"
+	"ebby/control/strdef"
+	"ebby/errdef"
 	"fmt"
 
 	"github.com/faiface/pixel"

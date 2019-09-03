@@ -1,8 +1,8 @@
 package textscen2
 
 import (
-	"campaign/control/scenario"
-	"campaign/control/strdef"
+	"ebby/control/scenario"
+	"ebby/control/strdef"
 	"fmt"
 	"time"
 

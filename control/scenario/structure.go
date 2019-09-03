@@ -1,7 +1,7 @@
 package scenario
 
 import (
-	"campaign/control/strdef"
+	"ebby/control/strdef"
 	"time"
 
 	"github.com/faiface/pixel/pixelgl"
