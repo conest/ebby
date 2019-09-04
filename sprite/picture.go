@@ -28,10 +28,10 @@ func loadPicture(path string) (pixel.Picture, error) {
 }
 
 // SheetFromPicture : 从图片文件读取
-func SheetFromPicture(picPath string) pixel.Picture {
+func SheetFromPicture(picPath string) *pixel.Picture {
 	spritesheet, err := loadPicture(picPath)
 	errdef.CheckErr(err, "sprite/picture", errdef.PictureLoadFile)
-	return spritesheet
+	return &spritesheet
 }
 
 // SeparateFrames : 根据sprite sheet均匀分割frames
