@@ -9,11 +9,9 @@ type Request struct {
 }
 
 // DefaultRequest : 返回默认 Request，执行执行excute
-func DefaultRequest() Request {
-	return Request{
-		Continue:     true,
-		NextScenario: "",
-		Terminate:    false,
-		ResetData:    true,
-	}
+var DefaultRequest = Request{
+	Continue:     true,
+	NextScenario: "",
+	Terminate:    false,
+	ResetData:    true,
 }

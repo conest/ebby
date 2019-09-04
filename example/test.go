@@ -56,7 +56,7 @@ func (i *instance) Initial(w *pixelgl.Window) {
 func (i *instance) Excuter(dt float64) strdef.Request {
 	debugLogger := i.sdata.Tool.DebugLogger
 
-	r := strdef.DefaultRequest()
+	r := strdef.DefaultRequest
 	select {
 	case <-i.data.ticker.C:
 		debugLogger.Clear()

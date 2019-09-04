@@ -14,7 +14,7 @@ import (
 // Run : 主运行
 func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 
-	req := strdef.DefaultRequest()
+	req := strdef.DefaultRequest
 	last := time.Now()
 	// DEBUG: debug mode
 	// fps

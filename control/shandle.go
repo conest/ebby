@@ -1,10 +1,10 @@
 package control
 
 import (
-	"ebby/common/logger"
 	"ebby/control/scenario"
 	"ebby/control/strdef"
 	"ebby/errdef"
+	"errors"
 	"fmt"
 
 	"github.com/faiface/pixel/pixelgl"
@@ -34,9 +34,8 @@ func initScenario(s *scenario.Scenario, r strdef.Request, win *pixelgl.Window) {
 // checkScenario : 检测对应的scenario是否存在
 func checkScenario(ok bool, id string) {
 	if !ok {
-		log := logger.New()
-		errString := fmt.Sprintf("[control]<%s> %v", errdef.NoScenario.Str, id)
-		log.Error(errString)
-		panic(errString)
+		str := fmt.Sprintf("id: [%s]", id)
+		err := errors.New(str)
+		errdef.CheckErr(err, "control", errdef.NoScenario)
 	}
 }

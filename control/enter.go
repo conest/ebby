@@ -2,9 +2,7 @@ package control
 
 import (
 	"ebby/common/cfgloader"
-	"ebby/common/logger"
 	"ebby/errdef"
-	"fmt"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -40,16 +38,7 @@ func setWindow() (*viper.Viper, *pixelgl.Window) {
 	}
 
 	win, err := pixelgl.NewWindow(cfg)
-	checkErr(err)
+	errdef.CheckErr(err, "control/Enter", errdef.CreateWindow)
 
 	return config, win
-}
-
-func checkErr(err error) {
-	if err != nil {
-		log := logger.New()
-		errString := fmt.Sprintf("[Enter]<%s> %v", errdef.CreateWindow.Str, err)
-		log.Error(errString)
-		panic(errString)
-	}
 }

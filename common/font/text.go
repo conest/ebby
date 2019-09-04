@@ -1,11 +1,9 @@
 package font
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 
-	"ebby/common/logger"
 	"ebby/errdef"
 
 	"github.com/faiface/pixel/text"
@@ -37,19 +35,11 @@ func loadTTF(path string, size float64) (font.Face, error) {
 	}), nil
 }
 
-func errLog(err error) {
-	if err != nil {
-		log := logger.New()
-		log.Error(fmt.Sprintf("[common/font]<%s> %v", errdef.FontLoadFile.Str, err))
-		panic(err)
-	}
-}
-
 // GetAtlas : 获取字体 Atlas
 // TODO: 字体部分还需要详细调整
 func GetAtlas(path string, size float64) *text.Atlas {
 	face, err := loadTTF(path, size)
-	errLog(err)
+	errdef.CheckErr(err, "common/font", errdef.FontLoadFile)
 
 	return text.NewAtlas(face, text.ASCII)
 }

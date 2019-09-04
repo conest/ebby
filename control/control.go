@@ -73,7 +73,7 @@ func (c *Control) DebugMode() {
 
 // Run : 运行 scenario
 func (c *Control) Run() {
-	r := strdef.DefaultRequest()
+	r := strdef.DefaultRequest
 	for {
 		s, ok := c.scenarios[c.now]
 		checkScenario(ok, c.now)
