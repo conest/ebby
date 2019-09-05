@@ -13,6 +13,7 @@ type Instance interface {
 	Initial(*pixelgl.Window)
 	Excuter(float64) strdef.Request
 	Drawer(*pixelgl.Window)
+	InputHandle(*pixelgl.Window, float64)
 	SetSData(*strdef.ShareData)
 	ResetData()
 }

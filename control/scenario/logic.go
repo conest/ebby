@@ -2,12 +2,10 @@ package scenario
 
 import (
 	"ebby/control/strdef"
-	"fmt"
 	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
 )
 
@@ -16,13 +14,10 @@ func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 
 	req := strdef.DefaultRequest
 	last := time.Now()
+
 	// DEBUG: debug mode
 	// fps
-	var (
-		frames    = 0
-		fpsTicker = time.NewTicker(time.Second)
-		fpsTxt    = text.New(pixel.V(4, 4), s.sdata.Resource.DebugAtlas)
-	)
+	fps := strdef.NewFps(w, s.sdata.Resource.DebugAtlas)
 
 	// 执行循环
 	for {
@@ -34,6 +29,9 @@ func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 		// Delta Time
 		dt := time.Since(last).Seconds()
 		last = time.Now()
+
+		s.inputHandle(w, dt)
+
 		if r := s.excute(dt); !r.Continue {
 			req = r
 			return req
@@ -41,11 +39,7 @@ func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 
 		w.Clear(colornames.Black)
 		s.draw(w)
-
-		// DEBUG: debug mode
-		fps(w, fpsTxt, &frames, fpsTicker.C)
-		fpsTxt.Draw(w, pixel.IM)
-
+		fps.Update() // DEBUG: debug mode
 		w.Update()
 
 		<-s.sTicker.C
@@ -70,14 +64,7 @@ func (s *Scenario) draw(w *pixelgl.Window) {
 	s.sdata.Tool.DebugLogger.Draw(w, pixel.IM)
 }
 
-// DEBUG: debug mode
-func fps(win *pixelgl.Window, fpsTxt *text.Text, frames *int, tick <-chan time.Time) {
-	*frames++
-	select {
-	case <-tick:
-		fpsTxt.Clear()
-		fmt.Fprintf(fpsTxt, "FPS: %v", *frames)
-		*frames = 0
-	default:
-	}
+// inputHandle : 输入监听
+func (s *Scenario) inputHandle(w *pixelgl.Window, dt float64) {
+	s.ins.InputHandle(w, dt)
 }
