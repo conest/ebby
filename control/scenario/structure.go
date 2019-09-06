@@ -1,7 +1,7 @@
 package scenario
 
 import (
-	"ebby/control/strdef"
+	"ebby/control/def"
 	"time"
 
 	"github.com/faiface/pixel/pixelgl"
@@ -11,10 +11,10 @@ import (
 // Instance : 场景实例接口，场景数据结构由具体场景定义
 type Instance interface {
 	Initial(*pixelgl.Window)
-	Excuter(float64) strdef.Request
+	Excuter(float64) def.Request
 	Drawer(*pixelgl.Window)
 	InputHandle(*pixelgl.Window, float64)
-	SetSData(*strdef.ShareData)
+	SetSData(*def.ShareData)
 	ResetData()
 }
 
@@ -25,7 +25,7 @@ type Scenario struct {
 	sTicker *time.Ticker // sTicker: 总 rps 限制用 ticker，用于节省 cpu
 	eTicker *time.Ticker // eTicker: 场景执行部分限制用 ticker
 	ins     Instance     // Scenario 实例
-	sdata   *strdef.ShareData
+	sdata   *def.ShareData
 }
 
 // New :
@@ -54,7 +54,7 @@ func (s *Scenario) Initial(w *pixelgl.Window) {
 }
 
 // SetData : 设置并初始化数据
-func (s *Scenario) SetData(sdata *strdef.ShareData) {
+func (s *Scenario) SetData(sdata *def.ShareData) {
 	s.sdata = sdata
 	s.ins.SetSData(sdata)
 	s.ResetData()

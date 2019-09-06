@@ -2,7 +2,7 @@ package control
 
 import (
 	"ebby/control/scenario"
-	"ebby/control/strdef"
+	"ebby/control/def"
 	"ebby/errdef"
 	"errors"
 	"fmt"
@@ -15,7 +15,7 @@ import (
 type ScenarioMap map[string]*scenario.Scenario
 
 // loadScenarios : 加载 Scenario 列表
-func loadScenarios(sm ScenarioMap, sdata *strdef.ShareData, config *viper.Viper) ScenarioMap {
+func loadScenarios(sm ScenarioMap, sdata *def.ShareData, config *viper.Viper) ScenarioMap {
 	for _, ss := range sm {
 		ss.SetConfig(config)
 		ss.SetData(sdata)
@@ -24,7 +24,7 @@ func loadScenarios(sm ScenarioMap, sdata *strdef.ShareData, config *viper.Viper)
 }
 
 // initScenario : 初始化场景
-func initScenario(s *scenario.Scenario, r strdef.Request, win *pixelgl.Window) {
+func initScenario(s *scenario.Scenario, r def.Request, win *pixelgl.Window) {
 	if r.ResetData {
 		s.ResetData()
 		s.Initial(win)

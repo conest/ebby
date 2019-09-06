@@ -1,7 +1,7 @@
 package scenario
 
 import (
-	"ebby/control/strdef"
+	"ebby/control/def"
 	"time"
 
 	"github.com/faiface/pixel"
@@ -10,19 +10,19 @@ import (
 )
 
 // Run : 主运行
-func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
+func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 
-	req := strdef.DefaultRequest
+	req := def.DefaultRequest
 	last := time.Now()
 
 	// DEBUG: debug mode
 	// fps
-	fps := strdef.NewFps(w, s.sdata.Resource.DebugAtlas)
+	fps := def.NewFps(w, s.sdata.Resource.DebugAtlas)
 
 	// 执行循环
 	for {
 		if w.Closed() {
-			req = strdef.Request{Terminate: true}
+			req = def.Request{Terminate: true}
 			return req
 		}
 
@@ -47,13 +47,13 @@ func (s *Scenario) Run(w *pixelgl.Window) strdef.Request {
 }
 
 // excute : 数据执行
-func (s *Scenario) excute(dt float64) strdef.Request {
+func (s *Scenario) excute(dt float64) def.Request {
 	select {
 	case <-s.eTicker.C:
 		r := s.ins.Excuter(dt)
 		return r
 	default:
-		return strdef.Request{Continue: true}
+		return def.Request{Continue: true}
 	}
 }
 

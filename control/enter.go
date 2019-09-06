@@ -10,12 +10,12 @@ import (
 )
 
 // Enter : 创建窗口并初始化控制中心
-func Enter(sm ScenarioMap, fn *Functions) {
+func Enter(sm ScenarioMap, fn *Functions, sd interface{}) {
 
 	config, win := setWindow()
 
 	// 创建新的控制中心
-	c := New(win, config, sm)
+	c := New(win, config, sm, sd)
 	c.SetFunctions(fn)
 	c.DebugMode()
 	c.Init()

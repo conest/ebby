@@ -2,7 +2,7 @@ package textscen
 
 import (
 	"ebby/control/scenario"
-	"ebby/control/strdef"
+	"ebby/control/def"
 	"fmt"
 	"time"
 
@@ -23,7 +23,7 @@ func Scenario() *scenario.Scenario {
 
 // instance : 数据实例，可以自定义
 type instance struct {
-	sdata *strdef.ShareData
+	sdata *def.ShareData
 	data  *customData
 }
 
@@ -34,7 +34,7 @@ type customData struct {
 }
 
 // SetSData : 设置共享数据
-func (i *instance) SetSData(sdata *strdef.ShareData) {
+func (i *instance) SetSData(sdata *def.ShareData) {
 	i.sdata = sdata
 }
 
@@ -53,10 +53,10 @@ func (i *instance) Initial(w *pixelgl.Window) {
 	i.data.num = 1
 }
 
-func (i *instance) Excuter(dt float64) strdef.Request {
+func (i *instance) Excuter(dt float64) def.Request {
 	debugLogger := i.sdata.Tool.DebugLogger
 
-	r := strdef.DefaultRequest
+	r := def.DefaultRequest
 	select {
 	case <-i.data.ticker.C:
 		debugLogger.Clear()

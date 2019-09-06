@@ -1,4 +1,4 @@
-package strdef
+package def
 
 import (
 	"fmt"

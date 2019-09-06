@@ -8,6 +8,7 @@ import (
 type Ebby struct {
 	sm control.ScenarioMap
 	fn control.Functions
+	sd interface{}
 }
 
 // New :
@@ -28,6 +29,11 @@ func (e *Ebby) SetBeforeExitFunc(fn func(*control.Control)) {
 	e.fn.Bfex = fn
 }
 
+// SetShareData :
+func (e *Ebby) SetShareData(i interface{}) {
+	e.sd = i
+}
+
 // Run :
 func (e *Ebby) Run() {
 	if e.fn.Ini == nil {
@@ -37,5 +43,5 @@ func (e *Ebby) Run() {
 		e.fn.Bfex = defaultBeforeExitFunc
 	}
 
-	control.Enter(e.sm, &e.fn)
+	control.Enter(e.sm, &e.fn, e.sd)
 }
