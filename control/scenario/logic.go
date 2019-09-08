@@ -2,7 +2,6 @@ package scenario
 
 import (
 	"ebby/control/def"
-	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -13,7 +12,7 @@ import (
 func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 
 	req := def.DefaultRequest
-	last := time.Now()
+	dts := NewDT()
 
 	// DEBUG: debug mode
 	// fps
@@ -27,8 +26,7 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 		}
 
 		// Delta Time
-		dt := time.Since(last).Seconds()
-		last = time.Now()
+		dt := dts.Get()
 
 		s.inputHandle(w, dt)
 
@@ -38,7 +36,7 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 		}
 
 		w.Clear(colornames.Black)
-		s.draw(w)
+		s.draw(w, dt)
 		fps.Update() // DEBUG: debug mode
 		w.Update()
 
@@ -58,8 +56,8 @@ func (s *Scenario) excute(dt float64) def.Request {
 }
 
 // draw : 绘图
-func (s *Scenario) draw(w *pixelgl.Window) {
-	s.ins.Drawer(w)
+func (s *Scenario) draw(w *pixelgl.Window, dt float64) {
+	s.ins.Drawer(w, dt)
 	// DEBUG: debug mode
 	s.sdata.Tool.DebugLogger.Draw(w, pixel.IM)
 }

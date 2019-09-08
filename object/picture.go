@@ -1,4 +1,4 @@
-package sprite
+package object
 
 import (
 	"ebby/errdef"

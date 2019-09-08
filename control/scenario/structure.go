@@ -12,7 +12,7 @@ import (
 type Instance interface {
 	Initial(*pixelgl.Window)
 	Excuter(float64) def.Request
-	Drawer(*pixelgl.Window)
+	Drawer(*pixelgl.Window, float64)
 	InputHandle(*pixelgl.Window, float64)
 	SetSData(*def.ShareData)
 	ResetData()
@@ -63,4 +63,21 @@ func (s *Scenario) SetData(sdata *def.ShareData) {
 // ResetData : 重置自定义数据
 func (s *Scenario) ResetData() {
 	s.ins.ResetData()
+}
+
+// DeltaTime : Delta Time，每次屏幕刷新之间的时间差
+type DeltaTime struct {
+	last time.Time
+}
+
+// NewDT : 生成新的 Delta 实例
+func NewDT() DeltaTime {
+	return DeltaTime{last: time.Now()}
+}
+
+// Get : 重置自定义数据
+func (d *DeltaTime) Get() float64 {
+	dt := time.Since(d.last).Seconds()
+	d.last = time.Now()
+	return dt
 }
