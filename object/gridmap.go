@@ -27,6 +27,7 @@ func NewGridMap(gridPixel, x, y int, pic *pixel.Picture) *GridMap {
 		gridPixel: gridPixel,
 		gridTab:   gt,
 		pic:       pic,
+		batch:     pixel.NewBatch(&pixel.TrianglesData{}, *pic),
 	}
 }
 
