@@ -39,7 +39,7 @@ func (a *Animate) AddList(newFrames []AniFrame) {
 // Get : 获取当前动画帧
 func (a *Animate) Get(dt float64) pixel.Rect {
 	if !a.Playing {
-		return a.frames[0].Frame
+		return a.frames[a.P].Frame
 	}
 	plusDt := math.Mod(dt, a.sumLast) + a.overDt
 	for {
@@ -69,15 +69,21 @@ func (a *Animate) Stop() {
 
 // nextFrame : 动画帧号前进，返回前进后的帧号
 func (a *Animate) nextFrame() int {
-	a.P++
-	if a.P == len(a.frames) {
-		a.P = 0
-		if a.Repeat > 0 {
-			a.Repeat--
-			if a.Repeat == 0 {
-				a.Playing = false
-			}
+	if a.P >= len(a.frames)-1 {
+		// 判断无限循环
+		if a.Repeat == 0 {
+			a.P = 0
+			return a.P
 		}
+		a.Repeat--
+		// 判断停止
+		if a.Repeat == 0 {
+			a.Playing = false
+		} else {
+			a.P = 0
+		}
+	} else {
+		a.P++
 	}
 	return a.P
 }
@@ -86,8 +92,8 @@ func (a *Animate) nextFrame() int {
 type Elf struct {
 	s        *pixel.Sprite
 	picture  *pixel.Picture
-	STable   []pixel.Rect
-	SID      int
+	sTable   []pixel.Rect
+	sID      int
 	Animate  bool
 	aniTable []Animate
 	aniID    int
@@ -118,20 +124,26 @@ func (e *Elf) SetAnimate(playID int, repeat int) {
 	e.aniTable[playID].Play(repeat)
 }
 
+// AddStatic : 添加新静态图，返回静态图序列编号
+func (e *Elf) AddStatic(staticPic pixel.Rect) int {
+	e.sTable = append(e.sTable, staticPic)
+	return len(e.sTable)
+}
+
 // SetStatic : 配置静态图
 func (e *Elf) SetStatic(id int) {
-	if id >= len(e.STable) {
-		id = len(e.STable) - 1
+	if id >= len(e.sTable) {
+		id = len(e.sTable) - 1
 	}
 	e.Animate = false
-	e.SID = id
+	e.sID = id
 }
 
 // Update : 更新 sprite
 func (e *Elf) Update(dt float64) {
 	f := pixel.Rect{}
 	if !e.Animate {
-		f = e.STable[e.SID]
+		f = e.sTable[e.sID]
 	} else {
 		f = e.aniTable[e.aniID].Get(dt)
 	}
