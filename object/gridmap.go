@@ -1,6 +1,8 @@
 package object
 
-import "github.com/faiface/pixel"
+import (
+	"github.com/faiface/pixel"
+)
 
 // GridMap :
 type GridMap struct {
@@ -14,7 +16,7 @@ type GridMap struct {
 }
 
 // NewGridMap : 创建新的 GridMap
-func NewGridMap(gridPixel, x, y int, pic *pixel.Picture) *GridMap {
+func NewGridMap(gridPixel, x, y int, pic *pixel.Picture, fl []pixel.Rect) *GridMap {
 
 	gt := make([][]int, y)
 	for i := range gt {
@@ -26,6 +28,7 @@ func NewGridMap(gridPixel, x, y int, pic *pixel.Picture) *GridMap {
 		y:         y,
 		gridPixel: gridPixel,
 		gridTab:   gt,
+		frameList: fl,
 		pic:       pic,
 		batch:     pixel.NewBatch(&pixel.TrianglesData{}, *pic),
 	}
