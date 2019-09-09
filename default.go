@@ -6,7 +6,7 @@ import (
 
 // Init : 初始化
 func defaultInitialFunc(c *control.Control) {
-	c.SData().Tool.Logger.Info("[Control Center] Started")
+	c.SData().Tool.Logger.Info("[control] Started")
 }
 
 // BeforeExit : 关闭前行为（保存数据等）

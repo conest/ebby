@@ -8,6 +8,12 @@
 go get github.com/conest/ebby
 ```
 
+你还需要安装 pixel
+
+```
+go get github.com/faiface/pixel
+```
+
 ## 范例
 
 ### 入口
@@ -15,20 +21,45 @@ go get github.com/conest/ebby
 ``` go
 // 配置入口函数
 func run() {
-    // 加载你的场景列表
+	// 加载你的场景列表
 	sm := control.ScenarioMap{
-		"dungeon": dungeon.Scenario(),
+		"hello": hello.Scenario(),
 	}
-    // 新建ebby实例
-	eb := ebby.New(sm)
-    // 设置全局共享数据格式
-	eb.SetShareData(&udef.ShareData{})
-	eb.Run()
+	// 新建ebby实例并运行
+	ebby.New(sm).Run()
 }
 
 func main() {
+	// 使用pixelgl的入口函数
 	pixelgl.Run(run)
 }
+```
+
+### 配置文件
+
+文件 config.yaml 放在项目根目录下
+
+```yaml
+mode: debug
+
+screen:
+  rX: 1024
+  rY: 800
+  title: Hello World
+  VSync:  False
+
+scenario:
+  # 最高循环速率限制，避免一些情况(关闭垂直同步；窗口最小化等)高速loop导致消耗大量cpu
+  # 该功能可能会使垂直同步失效
+  # 单位: frames / second
+  maxRate: 60
+  # 入口场景名称
+  entry: hello
+
+logger:
+  level: debug
+  logToFile: False
+  filePath: log/1.log
 ```
 
 ### Hello World 场景配置
@@ -48,7 +79,7 @@ func Scenario() *scenario.Scenario {
 // instance : 数据实例，可以自定义
 type instance struct {
 	sdata *def.ShareData
-    data  *customData
+	data  *customData
 }
 
 // customData : 自定义数据格式
@@ -68,9 +99,9 @@ func (i *instance) ResetData() {
 
 // 初始化场景
 func (i *instance) Initial(w *pixelgl.Window) {
-    i.data.Hello = "Hello World!"
-    // 使用 Debug 工具中的 Logger 在屏幕上显示字符串
-    fmt.Fprintf(i.sdata.Tool.DebugLogger, "%v", i.data.Hello)
+	i.data.Hello = "Hello World!"
+	// 使用 Debug 工具中的 Logger 在屏幕上显示字符串
+	fmt.Fprintf(i.sdata.Tool.DebugLogger, "%v", i.data.Hello)
 }
 
 // 执行计算阶段调用函数
@@ -79,14 +110,10 @@ func (i *instance) Excuter(dt float64) def.Request {
 }
 
 // 绘图阶段调用函数
-func (i *instance) Drawer(w *pixelgl.Window, dt float64) {
-
-}
+func (i *instance) Drawer(w *pixelgl.Window, dt float64) {}
 
 // 输出读取调用函数
-func (i *instance) InputHandle(w *pixelgl.Window, dt float64) {
-	
-}
+func (i *instance) InputHandle(w *pixelgl.Window, dt float64) {}
 ```
 
 ## TODO
@@ -94,7 +121,10 @@ func (i *instance) InputHandle(w *pixelgl.Window, dt float64) {
 - [x] 基础Debug工具
 - [x] Logger(使用logrus)
 - [x] 基础字体加载
-- [x] Elf - 支持动画的高级精灵对象
-- [ ] 精灵图处理工具集
+- [x] 支持动画的高级sprite对象
+- [ ] 按钮对象以及监听工具
+- [ ] 视角工具
+- [ ] GLSL控制支持
+- [ ] sprite图片处理工具集
 - [ ] 高级实用工具集
 - [ ] 完善中文字体加载性能问题
