@@ -14,7 +14,7 @@ type GridMap struct {
 }
 
 // NewGridMap : 创建新的 GridMap
-func NewGridMap(gridPixel, x, y int) *GridMap {
+func NewGridMap(gridPixel, x, y int, pic *pixel.Picture) *GridMap {
 
 	gt := make([][]int, y)
 	for i := range gt {
@@ -26,6 +26,7 @@ func NewGridMap(gridPixel, x, y int) *GridMap {
 		y:         y,
 		gridPixel: gridPixel,
 		gridTab:   gt,
+		pic:       pic,
 	}
 }
 
@@ -49,22 +50,21 @@ func (g *GridMap) GridTabValue(x, y int) int {
 	return g.gridTab[y][x]
 }
 
-// TODO:
+// Batch : 获取Batch
+func (g *GridMap) Batch() *pixel.Batch {
+	return g.batch
+}
+
 // BatchGen : 根据 GridTab 生成 Batch
-// func (g *GridMap) BatchGen() {
-// 	batch := pixel.NewBatch(&pixel.TrianglesData{}, *g.pic)
-// 	sprite := pixel.NewSprite(nil, pixel.Rect{})
-// 	for y, l := range m.frameNum {
-// 		for x, v := range l {
-// 			sprite.Set(*ss, frames[v])
-
-// 			vec := pixel.Vec{
-// 				X: float64(x*pSize + 8),
-// 				Y: float64(y*pSize + 8),
-// 			}
-// 			sprite.Draw(batch, pixel.IM.Moved(vec))
-// 		}
-// 	}
-
-// 	return batch
-// }
+func (g *GridMap) BatchGen() {
+	g.batch.Clear()
+	sprite := pixel.NewSprite(nil, pixel.Rect{})
+	for y, row := range g.gridTab {
+		for x, v := range row {
+			sprite.Set(*g.pic, g.frameList[v])
+			l := Location{X: x, Y: y}
+			vec := l.ToVec(true, g.gridPixel)
+			sprite.Draw(g.batch, pixel.IM.Moved(vec))
+		}
+	}
+}
