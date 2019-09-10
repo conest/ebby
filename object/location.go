@@ -48,3 +48,11 @@ func (l *Location) Add(cl Location) Location {
 		Y: l.Y + cl.Y,
 	}
 }
+
+// Moved : 根据输入xy改变量，返回新 Location
+func (l *Location) Moved(x, y int) Location {
+	return Location{
+		X: l.X + x,
+		Y: l.Y + y,
+	}
+}
