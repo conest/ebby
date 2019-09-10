@@ -27,6 +27,14 @@ func (l *Location) ToVec(central bool, gridPixel int) pixel.Vec {
 	}
 }
 
+// ToVecOffset : 根据偏移距离转换为 Vec (offset: 偏移距离)
+func (l *Location) ToVecOffset(offset float64, gridPixel int) pixel.Vec {
+	return pixel.Vec{
+		X: float64(l.X*gridPixel) + offset,
+		Y: float64(l.Y*gridPixel) + offset,
+	}
+}
+
 // SetFromVec : 从Vec设置Location
 func (l *Location) SetFromVec(vec pixel.Vec, gridPixel int) {
 	l.X = int(vec.X) / gridPixel
@@ -55,4 +63,19 @@ func (l *Location) Moved(x, y int) Location {
 		X: l.X + x,
 		Y: l.Y + y,
 	}
+}
+
+// Distance : 返回两点之间的方格距离
+func (l *Location) Distance(cl Location) int {
+	x := l.X - cl.X
+	y := l.Y - cl.Y
+	return Abs(x) + Abs(y)
+}
+
+// Abs : 绝对值
+func Abs(a int) int {
+	if a < 0 {
+		return -a
+	}
+	return a
 }
