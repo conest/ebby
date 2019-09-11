@@ -49,11 +49,19 @@ func (l *Location) Eq(cl Location) bool {
 	return false
 }
 
-// Add : 相加，返回相加结果，不改变原值
+// Add : 相加，返回结果，不改变原值
 func (l *Location) Add(cl Location) Location {
 	return Location{
 		X: l.X + cl.X,
 		Y: l.Y + cl.Y,
+	}
+}
+
+// Sub : 相减，返回结果，不改变原值
+func (l *Location) Sub(cl Location) Location {
+	return Location{
+		X: l.X - cl.X,
+		Y: l.Y - cl.Y,
 	}
 }
 
@@ -70,12 +78,4 @@ func (l *Location) Distance(cl Location) int {
 	x := l.X - cl.X
 	y := l.Y - cl.Y
 	return Abs(x) + Abs(y)
-}
-
-// Abs : 绝对值
-func Abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
 }
