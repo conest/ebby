@@ -7,7 +7,15 @@ type Location struct {
 	X, Y int
 }
 
-// NewLocationFromVec : 根据Vec创建Location
+// NewLocation : 输入 (x, y) 创建Location
+func NewLocation(x, y int) Location {
+	return Location{
+		X: x,
+		Y: y,
+	}
+}
+
+// NewLocationFromVec : 输入 Vec 创建Location
 func NewLocationFromVec(vec pixel.Vec, gridPixel int) Location {
 	return Location{
 		X: int(vec.X) / gridPixel,
@@ -15,7 +23,15 @@ func NewLocationFromVec(vec pixel.Vec, gridPixel int) Location {
 	}
 }
 
-// ToVec : 转换为 Vec (central：返回的为中心点，否则为(0,0)点)
+// Vec : 直接转换为Vec
+func (l *Location) Vec() pixel.Vec {
+	return pixel.Vec{
+		X: float64(l.X),
+		Y: float64(l.Y),
+	}
+}
+
+// ToVec : 根据gridPixel转换为 Vec (central：返回的为中心点，否则为(0,0)点)
 func (l *Location) ToVec(central bool, gridPixel int) pixel.Vec {
 	var c float64
 	if central {
@@ -78,4 +94,9 @@ func (l *Location) Distance(cl Location) int {
 	x := l.X - cl.X
 	y := l.Y - cl.Y
 	return Abs(x) + Abs(y)
+}
+
+// ToSlice : 返回一个以当前点为0元素的slice
+func (l *Location) ToSlice() []Location {
+	return []Location{*l}
 }

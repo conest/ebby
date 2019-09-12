@@ -11,7 +11,7 @@ import (
 // Instance : 场景实例接口，场景数据结构由具体场景定义
 type Instance interface {
 	Initial(*pixelgl.Window)
-	Excuter(float64) def.Request
+	Excuter(DeltaTime) def.Request
 	Drawer(*pixelgl.Window, float64)
 	InputHandle(*pixelgl.Window, float64)
 	SetSData(*def.ShareData)
@@ -67,17 +67,19 @@ func (s *Scenario) ResetData() {
 
 // DeltaTime : Delta Time，每次屏幕刷新之间的时间差
 type DeltaTime struct {
-	last time.Time
+	Last time.Time
+	Dt   float64
 }
 
 // NewDT : 生成新的 Delta 实例
 func NewDT() DeltaTime {
-	return DeltaTime{last: time.Now()}
+	return DeltaTime{Last: time.Now()}
 }
 
 // Get : 重置自定义数据
 func (d *DeltaTime) Get() float64 {
-	dt := time.Since(d.last).Seconds()
-	d.last = time.Now()
+	dt := time.Since(d.Last).Seconds()
+	d.Dt = dt
+	d.Last = time.Now()
 	return dt
 }

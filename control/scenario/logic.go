@@ -30,7 +30,7 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 
 		s.inputHandle(w, dt)
 
-		if r := s.excute(dt); !r.Continue {
+		if r := s.excute(dts); !r.Continue {
 			req = r
 			return req
 		}
@@ -45,10 +45,10 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 }
 
 // excute : 数据执行
-func (s *Scenario) excute(dt float64) def.Request {
+func (s *Scenario) excute(dts DeltaTime) def.Request {
 	select {
 	case <-s.eTicker.C:
-		r := s.ins.Excuter(dt)
+		r := s.ins.Excuter(dts)
 		return r
 	default:
 		return def.Request{Continue: true}
