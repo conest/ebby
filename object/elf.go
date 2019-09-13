@@ -1,6 +1,7 @@
 package object
 
 import (
+	"image/color"
 	"math"
 
 	"github.com/faiface/pixel"
@@ -153,6 +154,11 @@ func (e *Elf) Update(dt float64) {
 // Draw : 绘制当前 sprite
 func (e *Elf) Draw(target pixel.Target, m pixel.Matrix) {
 	e.s.Draw(target, m)
+}
+
+// DrawColorMask : 绘制当前 sprite，并应用色彩蒙版
+func (e *Elf) DrawColorMask(target pixel.Target, m pixel.Matrix, mask color.Color) {
+	e.s.DrawColorMask(target, m, mask)
 }
 
 // UDraw : 更新并绘制当前 sprite

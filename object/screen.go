@@ -11,12 +11,13 @@ import (
 type Screen struct {
 	Canvas    *pixelgl.Canvas
 	pos       pixel.Vec
-	Cam       pixel.Matrix
+	cam       pixel.Matrix
 	CamSpeed  float64
 	Zoom      float64
 	ZoomSpeed float64
 	ZoomMin   float64
 	ZoomMax   float64
+	IntZoom   bool
 }
 
 // NewScreen : 生成Camera (r: Canvas Rect)
@@ -25,18 +26,19 @@ func NewScreen(r pixel.Rect) Screen {
 		Canvas:    pixelgl.NewCanvas(r),
 		pos:       pixel.ZV,
 		CamSpeed:  300,
-		Zoom:      2,
+		Zoom:      1,
 		ZoomSpeed: 1.2,
 		ZoomMin:   1,
 		ZoomMax:   8,
+		IntZoom:   false,
 	}
 }
 
 // Update : 根据Pos更新Cam和Canvas位置
 func (s *Screen) Update() {
 	s.clampPos()
-	s.Cam = pixel.IM.Scaled(s.pos, s.Zoom).Moved(s.Canvas.Bounds().Center().Sub(s.pos))
-	s.Canvas.SetMatrix(s.Cam)
+	s.cam = pixel.IM.Scaled(s.pos, s.Zoom).Moved(s.Canvas.Bounds().Center().Sub(s.pos))
+	s.Canvas.SetMatrix(s.cam)
 }
 
 // clampPos: 检查镜头位置防止出Canvas边缘
@@ -47,11 +49,18 @@ func (s *Screen) clampPos() {
 	posMaxY := s.Canvas.Bounds().H() - s.Canvas.Bounds().H()/2/s.Zoom
 	s.pos.X = pixel.Clamp(s.pos.X, posMinX, posMaxX)
 	s.pos.Y = pixel.Clamp(s.pos.Y, posMinY, posMaxY)
+	// s.pos = s.pos.Floor()
 }
 
 // Pos : 返回 Pos
 func (s *Screen) Pos() pixel.Vec {
 	return s.pos
+}
+
+// SetPos : 设置Pos位置
+func (s *Screen) SetPos(v pixel.Vec) {
+	s.pos = v
+	s.Update()
 }
 
 // SetPosCentered : 设置Pos位置为Canvas中央
@@ -80,19 +89,54 @@ func (s *Screen) PosAddY(y float64) {
 	s.Update()
 }
 
+// Cam : 返回 Cam
+func (s *Screen) Cam() pixel.Matrix {
+	return s.cam
+}
+
 // SetZoom : 设置视角缩放
 func (s *Screen) SetZoom(v float64) {
+	s.Zoom = v
+	if s.IntZoom {
+		s.Zoom = math.Floor(s.Zoom)
+	}
+	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
+	s.Update()
+}
+
+// ScrollZoom : 滚动视角缩放(不推荐在IntZoom开启时使用)
+func (s *Screen) ScrollZoom(v float64) {
 	if v == 0 {
 		return
 	}
 	s.Zoom *= math.Pow(s.ZoomSpeed, v)
+	if s.IntZoom {
+		s.Zoom = math.Floor(s.Zoom)
+	}
+	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
+	s.Update()
+}
+
+// ScrollZoomSteped : 补进式滚动视角缩放(推荐在IntZoom开启时使用)
+func (s *Screen) ScrollZoomSteped(v float64) {
+	if v == 0 {
+		return
+	}
+	if v > 0 {
+		s.Zoom++
+	} else {
+		s.Zoom--
+	}
+	if s.IntZoom {
+		s.Zoom = math.Floor(s.Zoom)
+	}
 	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
 	s.Update()
 }
 
 // Unproject : 反向投射，用于映射绝对位置到Canvas相对位置
 func (s *Screen) Unproject(v pixel.Vec) pixel.Vec {
-	return s.Cam.Unproject(v)
+	return s.cam.Unproject(v)
 }
 
 // Draw : Draw到目标

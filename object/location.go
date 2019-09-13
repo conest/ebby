@@ -100,3 +100,19 @@ func (l *Location) Distance(cl Location) int {
 func (l *Location) ToSlice() []Location {
 	return []Location{*l}
 }
+
+// MakeIn : 确保当前点在输入两点的矩形范围内
+func (l *Location) MakeIn(lmin, lmax Location) {
+	if l.X < lmin.X {
+		l.X = lmin.X
+	}
+	if l.X > lmax.X {
+		l.X = lmax.X
+	}
+	if l.Y < lmin.Y {
+		l.Y = lmin.Y
+	}
+	if l.Y > lmax.Y {
+		l.Y = lmax.Y
+	}
+}

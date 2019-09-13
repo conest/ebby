@@ -59,6 +59,11 @@ func (g *GridMap) Batch() *pixel.Batch {
 	return g.batch
 }
 
+// Draw : Draw Batch
+func (g *GridMap) Draw(target pixel.Target) {
+	g.batch.Draw(target)
+}
+
 // BatchGen : 根据 GridTab 生成 Batch
 func (g *GridMap) BatchGen() {
 	g.batch.Clear()
