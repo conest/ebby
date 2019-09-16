@@ -89,6 +89,37 @@ func (a *Animate) nextFrame() int {
 	return a.P
 }
 
+// Fly : 飞行属性，提供用于Z显示的继承用的父类
+type Fly struct {
+	z    int
+	show bool
+}
+
+// NewFly : 返回新的fly
+func NewFly(show bool) Fly {
+	return Fly{show: show}
+}
+
+// Z : 返回Z值
+func (f *Fly) Z() int {
+	return f.z
+}
+
+// SetZ : 设置Z
+func (f *Fly) SetZ(z int) {
+	f.z = z
+}
+
+// Show : 返回Show值
+func (f *Fly) Show() bool {
+	return f.show
+}
+
+// SetShow : 设置Show
+func (f *Fly) SetShow(s bool) {
+	f.show = s
+}
+
 // Elf : 强化型 Sprite，支持动画等
 type Elf struct {
 	s        *pixel.Sprite
