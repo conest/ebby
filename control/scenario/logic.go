@@ -28,6 +28,7 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 		// Delta Time
 		dt := dts.Get()
 
+		s.sdata.Tool.Display.Update()
 		s.inputHandle(w, dt)
 
 		if r := s.excute(dts); !r.Continue {

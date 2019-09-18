@@ -25,6 +25,7 @@ type resource struct {
 
 // 公共工具库，如 logger
 type tool struct {
+	Display     DisplayController
 	Config      *viper.Viper
 	DebugLogger *text.Text
 	Logger      *logrus.Logger

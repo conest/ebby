@@ -6,6 +6,7 @@ import (
 
 	"ebby/errdef"
 
+	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/text"
 	"github.com/golang/freetype/truetype"
 	"golang.org/x/image/font"
@@ -35,16 +36,24 @@ func loadTTF(path string, size float64) (font.Face, error) {
 	}), nil
 }
 
-// GetAtlas : 获取字体 Atlas
+// Atlas : 获取字体 Atlas
 // TODO: 字体部分还需要详细调整
-func GetAtlas(path string, size float64) *text.Atlas {
+func Atlas(path string, size float64) *text.Atlas {
 	face, err := loadTTF(path, size)
 	errdef.CheckErr(err, "common/font", errdef.FontLoadFile)
 
 	return text.NewAtlas(face, text.ASCII)
 }
 
-// GetDebugAtlas : 获取debug用字体 Atlas: basicfont.Face7x13
-func GetDebugAtlas() *text.Atlas {
+// DebugAtlas : 获取debug用字体 Atlas: basicfont.Face7x13
+func DebugAtlas() *text.Atlas {
 	return text.NewAtlas(basicfont.Face7x13, text.ASCII)
+}
+
+// GetDebugLoggerDisplayCallBack : DebugLogger触发窗口变化后的回调函数
+func GetDebugLoggerDisplayCallBack(logger *text.Text) func(pixel.Vec) {
+	dl := logger
+	return func(winVec pixel.Vec) {
+		dl.Orig = pixel.V(4, winVec.Y-dl.LineHeight)
+	}
 }

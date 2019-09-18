@@ -23,14 +23,24 @@ type Animate struct {
 	Playing bool    // 是否播放动画
 }
 
-// Add : 增加新动画帧
-func (a *Animate) Add(newFrame AniFrame) {
+// Add : 根据frame和last创建新动画帧
+func (a *Animate) Add(frame pixel.Rect, last float64) {
+	af := AniFrame{
+		Frame: frame,
+		Last:  last,
+	}
+	a.frames = append(a.frames, af)
+	a.sumLast += last
+}
+
+// Push : 增加新动画帧
+func (a *Animate) Push(newFrame AniFrame) {
 	a.frames = append(a.frames, newFrame)
 	a.sumLast += newFrame.Last
 }
 
-// AddList : 列表方式增加新动画帧
-func (a *Animate) AddList(newFrames []AniFrame) {
+// PushList : 列表方式增加新动画帧
+func (a *Animate) PushList(newFrames []AniFrame) {
 	for _, newFrame := range newFrames {
 		a.frames = append(a.frames, newFrame)
 		a.sumLast += newFrame.Last

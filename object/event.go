@@ -4,6 +4,7 @@ import "time"
 
 // Event : 事件
 type Event struct {
+	ID          int
 	Touchable   bool
 	Times       int
 	CoolTime    float64

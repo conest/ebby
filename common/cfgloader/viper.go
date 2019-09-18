@@ -16,7 +16,7 @@ func Init() *(viper.Viper) {
 	err := v.ReadInConfig()
 
 	if err != nil {
-		panic(fmt.Errorf("[Viper config] Viper设置错误: %s", err))
+		panic(fmt.Errorf("[Viper config] Viper setting error: %s", err))
 	}
 
 	return v

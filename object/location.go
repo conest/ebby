@@ -16,10 +16,10 @@ func NewLocation(x, y int) Location {
 }
 
 // NewLocationFromVec : 输入 Vec 创建Location
-func NewLocationFromVec(vec pixel.Vec, gridPixel int) Location {
+func NewLocationFromVec(vec pixel.Vec, tilePixel int) Location {
 	return Location{
-		X: int(vec.X) / gridPixel,
-		Y: int(vec.Y) / gridPixel,
+		X: int(vec.X) / tilePixel,
+		Y: int(vec.Y) / tilePixel,
 	}
 }
 
@@ -31,30 +31,30 @@ func (l *Location) Vec() pixel.Vec {
 	}
 }
 
-// ToVec : 根据gridPixel转换为 Vec (central：返回的为中心点，否则为(0,0)点)
-func (l *Location) ToVec(central bool, gridPixel int) pixel.Vec {
+// ToVec : 根据tilePixel转换为 Vec (central：返回的为中心点，否则为(0,0)点)
+func (l *Location) ToVec(central bool, tilePixel int) pixel.Vec {
 	var c float64
 	if central {
-		c = float64(gridPixel / 2)
+		c = float64(tilePixel / 2)
 	}
 	return pixel.Vec{
-		X: float64(l.X*gridPixel) + c,
-		Y: float64(l.Y*gridPixel) + c,
+		X: float64(l.X*tilePixel) + c,
+		Y: float64(l.Y*tilePixel) + c,
 	}
 }
 
 // ToVecOffset : 根据偏移距离转换为 Vec (offset: 偏移距离)
-func (l *Location) ToVecOffset(offset float64, gridPixel int) pixel.Vec {
+func (l *Location) ToVecOffset(offset float64, tilePixel int) pixel.Vec {
 	return pixel.Vec{
-		X: float64(l.X*gridPixel) + offset,
-		Y: float64(l.Y*gridPixel) + offset,
+		X: float64(l.X*tilePixel) + offset,
+		Y: float64(l.Y*tilePixel) + offset,
 	}
 }
 
 // SetFromVec : 从Vec设置Location
-func (l *Location) SetFromVec(vec pixel.Vec, gridPixel int) {
-	l.X = int(vec.X) / gridPixel
-	l.Y = int(vec.Y) / gridPixel
+func (l *Location) SetFromVec(vec pixel.Vec, tilePixel int) {
+	l.X = int(vec.X) / tilePixel
+	l.Y = int(vec.Y) / tilePixel
 }
 
 // Eq : 比较是否相等
@@ -103,16 +103,6 @@ func (l *Location) ToSlice() []Location {
 
 // MakeIn : 确保当前点在输入两点的矩形范围内
 func (l *Location) MakeIn(lmin, lmax Location) {
-	if l.X < lmin.X {
-		l.X = lmin.X
-	}
-	if l.X > lmax.X {
-		l.X = lmax.X
-	}
-	if l.Y < lmin.Y {
-		l.Y = lmin.Y
-	}
-	if l.Y > lmax.Y {
-		l.Y = lmax.Y
-	}
+	l.X = Clamp(l.X, lmin.X, lmax.X)
+	l.Y = Clamp(l.Y, lmin.Y, lmax.Y)
 }

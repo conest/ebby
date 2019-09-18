@@ -143,3 +143,8 @@ func (s *Screen) Unproject(v pixel.Vec) pixel.Vec {
 func (s *Screen) Draw(target pixel.Target, targetCenter pixel.Vec) {
 	s.Canvas.Draw(target, pixel.IM.Moved(targetCenter))
 }
+
+// DisplayCallBack : Screen触发窗口变化后的回调函数
+func (s *Screen) DisplayCallBack(winVec pixel.Vec) {
+	s.Canvas.SetBounds(pixel.R(0, 0, winVec.X, winVec.Y))
+}
