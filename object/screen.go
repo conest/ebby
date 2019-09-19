@@ -9,28 +9,30 @@ import (
 
 // Screen : 画面，集合了Canvas与Camera功能
 type Screen struct {
-	Canvas    *pixelgl.Canvas
-	pos       pixel.Vec
-	cam       pixel.Matrix
-	CamSpeed  float64
-	Zoom      float64
-	ZoomSpeed float64
-	ZoomMin   float64
-	ZoomMax   float64
-	IntZoom   bool
+	Canvas     *pixelgl.Canvas
+	ScreenSize pixel.Vec
+	pos        pixel.Vec
+	cam        pixel.Matrix
+	CamSpeed   float64
+	Zoom       float64
+	ZoomSpeed  float64
+	ZoomMin    float64
+	ZoomMax    float64
+	IntZoom    bool
 }
 
 // NewScreen : 生成Camera (r: Canvas Rect)
-func NewScreen(r pixel.Rect) Screen {
+func NewScreen(r pixel.Rect, size pixel.Vec) Screen {
 	return Screen{
-		Canvas:    pixelgl.NewCanvas(r),
-		pos:       pixel.ZV,
-		CamSpeed:  300,
-		Zoom:      1,
-		ZoomSpeed: 1.2,
-		ZoomMin:   1,
-		ZoomMax:   8,
-		IntZoom:   false,
+		Canvas:     pixelgl.NewCanvas(r),
+		ScreenSize: size,
+		pos:        pixel.ZV,
+		CamSpeed:   300,
+		Zoom:       1,
+		ZoomSpeed:  1.2,
+		ZoomMin:    1,
+		ZoomMax:    8,
+		IntZoom:    false,
 	}
 }
 
@@ -45,11 +47,20 @@ func (s *Screen) Update() {
 func (s *Screen) clampPos() {
 	posMinX := s.Canvas.Bounds().W() / 2 / s.Zoom
 	posMinY := s.Canvas.Bounds().H() / 2 / s.Zoom
-	posMaxX := s.Canvas.Bounds().W() - s.Canvas.Bounds().W()/2/s.Zoom
-	posMaxY := s.Canvas.Bounds().H() - s.Canvas.Bounds().H()/2/s.Zoom
+	posMaxX := s.ScreenSize.X - s.Canvas.Bounds().W()/2/s.Zoom
+	posMaxY := s.ScreenSize.Y - s.Canvas.Bounds().H()/2/s.Zoom
 	s.pos.X = pixel.Clamp(s.pos.X, posMinX, posMaxX)
 	s.pos.Y = pixel.Clamp(s.pos.Y, posMinY, posMaxY)
-	// s.pos = s.pos.Floor()
+}
+
+// limitCam: 限制Zoom大小防止出Canvas边缘
+func (s *Screen) limitZoom() {
+	widthZoomLimit := s.Canvas.Bounds().W() / s.ScreenSize.X
+	heightZoomLimit := s.Canvas.Bounds().H() / s.ScreenSize.Y
+	ZoomLimit := math.Max(widthZoomLimit, heightZoomLimit)
+	if s.Zoom < ZoomLimit {
+		s.Zoom = ZoomLimit
+	}
 }
 
 // Pos : 返回 Pos
@@ -65,8 +76,8 @@ func (s *Screen) SetPos(v pixel.Vec) {
 
 // SetPosCentered : 设置Pos位置为Canvas中央
 func (s *Screen) SetPosCentered() {
-	s.pos.X = s.Canvas.Bounds().W() / 2
-	s.pos.Y = s.Canvas.Bounds().H() / 2
+	s.pos.X = s.ScreenSize.X / 2
+	s.pos.Y = s.ScreenSize.Y / 2
 	s.Update()
 }
 
@@ -101,6 +112,7 @@ func (s *Screen) SetZoom(v float64) {
 		s.Zoom = math.Floor(s.Zoom)
 	}
 	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
+	s.limitZoom()
 	s.Update()
 }
 
@@ -114,6 +126,7 @@ func (s *Screen) ScrollZoom(v float64) {
 		s.Zoom = math.Floor(s.Zoom)
 	}
 	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
+	s.limitZoom()
 	s.Update()
 }
 
@@ -131,6 +144,7 @@ func (s *Screen) ScrollZoomSteped(v float64) {
 		s.Zoom = math.Floor(s.Zoom)
 	}
 	s.Zoom = pixel.Clamp(s.Zoom, s.ZoomMin, s.ZoomMax)
+	s.limitZoom()
 	s.Update()
 }
 
@@ -147,4 +161,6 @@ func (s *Screen) Draw(target pixel.Target, targetCenter pixel.Vec) {
 // DisplayCallBack : Screen触发窗口变化后的回调函数
 func (s *Screen) DisplayCallBack(winVec pixel.Vec) {
 	s.Canvas.SetBounds(pixel.R(0, 0, winVec.X, winVec.Y))
+	s.limitZoom()
+	s.Update()
 }
