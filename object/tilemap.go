@@ -64,6 +64,14 @@ func (g *TileMap) Draw(target pixel.Target) {
 	g.batch.Draw(target)
 }
 
+// DrawSprite : 单独绘制Sprite到Batch上
+func (g *TileMap) DrawSprite(x, y, v int) {
+	sprite := pixel.NewSprite(*g.pic, g.frameList[v])
+	l := NewLocation(x, y)
+	vec := l.ToVec(true, g.tilePixel)
+	sprite.Draw(g.batch, pixel.IM.Moved(vec))
+}
+
 // BatchGen : 根据 TileTab 生成 Batch
 func (g *TileMap) BatchGen() {
 	g.batch.Clear()
