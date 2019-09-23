@@ -10,6 +10,14 @@ import (
 //   2
 type Direct4 int
 
+// Direct4tab : 4方向定位表
+var Direct4tab = []Location{
+	Location{X: 0, Y: 1},
+	Location{X: 1, Y: 0},
+	Location{X: 0, Y: -1},
+	Location{X: -1, Y: 0},
+}
+
 // GenDirect4 : 根据2点生成4方位方向 (lo: 原点，de: 指向点)
 func GenDirect4(lo, de Location) Direct4 {
 	var s Direct4
@@ -28,18 +36,10 @@ func GenDirect4(lo, de Location) Direct4 {
 
 // Location : 返回Location格式的方位
 func (d Direct4) Location() Location {
-	switch d {
-	case 0:
-		return Location{X: 0, Y: 1}
-	case 1:
-		return Location{X: 1, Y: 0}
-	case 2:
-		return Location{X: 0, Y: -1}
-	case 3:
-		return Location{X: -1, Y: 0}
-	default:
+	if !(d >= 0 && int(d) <= len(Direct4tab)-1) {
 		return Location{}
 	}
+	return Direct4tab[d]
 }
 
 // NextLocation : 根据输入地点返回方位所指向的接邻点
@@ -53,8 +53,8 @@ func (d Direct4) NextLocation(lo Location) Location {
 // 5 4 3
 type Direct8 int
 
-// 8方向定位表
-var direct8tab = []Location{
+// Direct8tab : 8方向定位表
+var Direct8tab = []Location{
 	Location{X: 0, Y: 1},
 	Location{X: 1, Y: 1},
 	Location{X: 1, Y: 0},
@@ -76,7 +76,7 @@ func GenDirect8(lo, de Location) Direct8 {
 	disl.X = Sign(disl.X)
 	disl.Y = Sign(disl.Y)
 
-	for i, v := range direct8tab {
+	for i, v := range Direct8tab {
 		if disl == v {
 			return Direct8(i)
 		}
@@ -113,10 +113,10 @@ func GenDirect8s(lo, de Location) Direct8 {
 
 // Location : 返回Location格式的方位
 func (d Direct8) Location() Location {
-	if !(d >= 0 && d <= 7) {
+	if !(d >= 0 && int(d) <= len(Direct8tab)-1) {
 		return Location{}
 	}
-	return direct8tab[d]
+	return Direct8tab[d]
 }
 
 // NextLocation : 根据输入地点返回方位所指向的接邻点
