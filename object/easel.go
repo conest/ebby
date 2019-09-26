@@ -1,7 +1,7 @@
 package object
 
 import (
-	"fmt"
+	"ebby/errdef"
 
 	"github.com/faiface/pixel"
 )
@@ -11,6 +11,7 @@ type Easel struct {
 	pictures map[string]*pixel.Picture
 	batchs   map[string]*pixel.Batch
 	frames   map[string][]pixel.Rect
+	rects    map[string]pixel.Rect
 }
 
 // NewEasel : 新Easel
@@ -19,6 +20,7 @@ func NewEasel() Easel {
 		pictures: make(map[string]*pixel.Picture, 0),
 		batchs:   make(map[string]*pixel.Batch, 0),
 		frames:   make(map[string][]pixel.Rect, 0),
+		rects:    make(map[string]pixel.Rect, 0),
 	}
 }
 
@@ -31,7 +33,7 @@ func (e *Easel) SetPicture(name string, pic *pixel.Picture) {
 func (e *Easel) Picture(name string) *pixel.Picture {
 	pic, exist := e.pictures[name]
 	if !exist {
-		panic(fmt.Errorf("[Easel] Picture get error. No picture named: %s", name))
+		errdef.Err("Picture get error. No picture named: "+name, "Easel")
 	}
 	return pic
 }
@@ -40,7 +42,7 @@ func (e *Easel) Picture(name string) *pixel.Picture {
 func (e *Easel) SetBatch(name string, picName string) {
 	pic, exist := e.pictures[picName]
 	if !exist {
-		panic(fmt.Errorf("[Easel] Set Batch error. No picture named: %s", picName))
+		errdef.Err("Set Batch error. No picture named: "+picName, "Easel")
 	}
 	e.batchs[name] = pixel.NewBatch(&pixel.TrianglesData{}, *pic)
 }
@@ -49,7 +51,7 @@ func (e *Easel) SetBatch(name string, picName string) {
 func (e *Easel) Batch(name string) *pixel.Batch {
 	batch, exist := e.batchs[name]
 	if !exist {
-		panic(fmt.Errorf("[Easel] Batch get error. No Batch named: %s", name))
+		errdef.Err("Batch get error. No Batch named: "+name, "Easel")
 	}
 	return batch
 }
@@ -63,7 +65,21 @@ func (e *Easel) SetFrame(name string, frame []pixel.Rect) {
 func (e *Easel) Frame(name string) []pixel.Rect {
 	frame, exist := e.frames[name]
 	if !exist {
-		panic(fmt.Errorf("[Easel] Frame get error. No Frame named: %s", name))
+		errdef.Err("Frame get error. No Frame named: "+name, "Easel")
 	}
 	return frame
+}
+
+// SetRect : 设置Rect
+func (e *Easel) SetRect(name string, rect pixel.Rect) {
+	e.rects[name] = rect
+}
+
+// Rect : 获取Rect
+func (e *Easel) Rect(name string) pixel.Rect {
+	rect, exist := e.rects[name]
+	if !exist {
+		errdef.Err("Rect get error. No Rect named: "+name, "Easel")
+	}
+	return rect
 }

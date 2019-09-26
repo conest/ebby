@@ -1,7 +1,7 @@
 package glsl
 
 import (
-	"fmt"
+	"ebby/errdef"
 	"io/ioutil"
 	"os"
 )
@@ -9,9 +9,8 @@ import (
 // Load : 读取glsl
 func Load(path string) string {
 	glsl, err := loadFile(path)
-	if err != nil {
-		panic(fmt.Errorf("[GLSL] Load error: %s", err))
-	}
+	errdef.CheckErr(err, "GLSL", errdef.GLSLLoad)
+
 	return glsl
 }
 
