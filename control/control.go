@@ -81,8 +81,8 @@ func (ctrl *Control) SetSData(sd interface{}) {
 	}
 }
 
-// GetSData : 取得 SData
-func (ctrl *Control) GetSData() *def.ShareData {
+// SData : 取得 SData
+func (ctrl *Control) SData() *def.ShareData {
 	return ctrl.sdata
 }
 
