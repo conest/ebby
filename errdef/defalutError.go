@@ -14,9 +14,18 @@ type errStruct struct {
 func CheckErr(err error, where string, es errStruct) {
 	if err != nil {
 		log := logger.New()
-		log.Error(fmt.Sprintf("[%s] <%s> %v", where, es.Str, err))
-		panic(err)
+		es := fmt.Sprintf("[%s] <%s> %v", where, es.Str, err)
+		log.Error(es)
+		panic(es)
 	}
+}
+
+// Err : 直接报出错误并输出日志
+func Err(err string, where string) {
+	log := logger.New()
+	es := fmt.Sprintf("[%s] %v", where, err)
+	log.Error(es)
+	panic(es)
 }
 
 var (
@@ -48,5 +57,35 @@ var (
 	NoScenario = errStruct{
 		ID:  "NoScenario",
 		Str: "无法取得对应ID的Scenario",
+	}
+
+	// PictureGet :
+	PictureGet = errStruct{
+		ID:  "PictureGet",
+		Str: "Picture get error. No picture named ",
+	}
+
+	// SetBatch :
+	SetBatch = errStruct{
+		ID:  "SetBatch",
+		Str: "Set batch error. No picture named ",
+	}
+
+	// GetBatch :
+	GetBatch = errStruct{
+		ID:  "GetBatch",
+		Str: "Get batch error. No batch named ",
+	}
+
+	// GetFrame :
+	GetFrame = errStruct{
+		ID:  "GetBatch",
+		Str: "Get frame error. No frame named ",
+	}
+
+	// GLSLLoad :
+	GLSLLoad = errStruct{
+		ID:  "GLSLLoad",
+		Str: "GLSL load resource err",
 	}
 )
