@@ -122,9 +122,9 @@ func (i *instance) InputHandle(w *pixelgl.Window, dt float64) {}
 - [x] Logger(使用logrus)
 - [x] 基础字体加载
 - [x] 支持动画的高级sprite对象
-- [ ] 按钮对象以及监听工具
-- [ ] 视角工具
-- [ ] GLSL控制支持
-- [ ] sprite图片处理工具集
+- [-] 按钮对象以及监听工具
+- [x] 视角工具
+- [x] GLSL控制支持
+- [-] sprite图片处理工具集
 - [ ] 高级实用工具集
 - [ ] 完善中文字体加载性能问题
