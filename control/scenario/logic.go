@@ -9,47 +9,48 @@ import (
 )
 
 // Run : 主运行
-func (s *Scenario) Run(w *pixelgl.Window) def.Request {
+func (scenario *Scenario) Run(window *pixelgl.Window) def.Request {
 
 	req := def.DefaultRequest
-	dts := NewDT()
+	dts := NewDeltaTimer()
 
 	// DEBUG: debug mode
 	// fps
-	fps := def.NewFps(w, s.sdata.Resource.DebugAtlas)
+	fps := def.NewFps(window, s.sdata.Resource.DebugAtlas)
 
 	// 执行循环
 	for {
-		if w.Closed() {
+		if window.Closed() {
 			req = def.Request{Terminate: true}
 			return req
 		}
 
 		// Delta Time
-		dt := dts.Get()
+		deltaTime := dts.GetDeltaTime()
 
-		s.sdata.Tool.Display.Update()
-		s.inputHandle(w, dt)
+		scenario.sdata.Tool.Display.Update()
+		scenario.inputHandle(window, deltaTime)
 
-		if r := s.excute(dts); !r.Continue {
+		if r := scenario.excute(dts); !r.Continue {
 			req = r
 			return req
 		}
 
-		w.Clear(colornames.Black)
-		s.draw(w, dt)
+		// Update Frame
+		window.Clear(colornames.Black)
+		scenario.draw(window, deltaTime)
 		fps.Update() // DEBUG: debug mode
-		w.Update()
+		window.Update()
 
-		<-s.sTicker.C
+		<-scenario.sTicker.C
 	}
 }
 
 // excute : 数据执行
-func (s *Scenario) excute(dts DeltaTime) def.Request {
+func (scenario *Scenario) excute(dtr DeltaTimer) def.Request {
 	select {
-	case <-s.eTicker.C:
-		r := s.ins.Excuter(dts)
+	case <-scenario.eTicker.C:
+		r := scenario.ins.Excuter(dtr)
 		return r
 	default:
 		return def.Request{Continue: true}
@@ -57,13 +58,13 @@ func (s *Scenario) excute(dts DeltaTime) def.Request {
 }
 
 // draw : 绘图
-func (s *Scenario) draw(w *pixelgl.Window, dt float64) {
-	s.ins.Drawer(w, dt)
+func (scenario *Scenario) draw(window *pixelgl.Window, deltaTime float64) {
+	scenario.ins.Drawer(window, deltaTime)
 	// DEBUG: debug mode
-	s.sdata.Tool.DebugLogger.Draw(w, pixel.IM)
+	scenario.sdata.Tool.DebugLogger.Draw(window, pixel.IM)
 }
 
 // inputHandle : 输入监听
-func (s *Scenario) inputHandle(w *pixelgl.Window, dt float64) {
-	s.ins.InputHandle(w, dt)
+func (scenario *Scenario) inputHandle(window *pixelgl.Window, deltaTime float64) {
+	scenario.ins.InputHandle(window, deltaTime)
 }

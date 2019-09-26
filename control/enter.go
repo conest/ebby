@@ -1,13 +1,13 @@
 package control
 
 // Enter : 创建窗口并初始化控制中心
-func Enter(sm ScenarioMap, fn *Functions, sd interface{}) {
+func Enter(scenarioMap ScenarioMap, fn *Functions, sData interface{}) {
 
 	// 创建新的控制中心
-	c := New(sm, sd)
-	c.SetFunctions(fn)
-	c.SetDebugLogger()
-	c.Init()
-	c.Run()
-	c.BeforeExit()
+	ctrl := CreateControl(scenarioMap, sData)
+	ctrl.SetFunctions(fn)
+	ctrl.SetDebugLogger()
+	ctrl.Init()
+	ctrl.Run()
+	ctrl.BeforeExit()
 }

@@ -32,11 +32,11 @@ type Functions struct {
 	Bfex func(*Control)
 }
 
-// New : 返回新的控制中心类
-func New(sm ScenarioMap, sd interface{}) *Control {
+// CreateControl : 返回新的控制中心类
+func CreateControl(scenarioMap ScenarioMap, sData interface{}) *Control {
 	config := cfgloader.Init()
 	win := setWindow(config)
-	c := &Control{
+	ctrl := &Control{
 		win:     win,
 		display: def.NewDisplayController(win),
 		config:  config,
@@ -44,89 +44,89 @@ func New(sm ScenarioMap, sd interface{}) *Control {
 		now:     config.GetString("scenario.entry"),
 		fn:      &Functions{},
 	}
-	c.SetSData(sd)
-	c.scenarios = loadScenarios(sm, c.sdata, config)
-	return c
+	ctrl.SetSData(sData)
+	ctrl.scenarios = loadScenarios(scenarioMap, ctrl.sdata, config)
+	return ctrl
 }
 
-func setWindow(config *viper.Viper) *pixelgl.Window {
-
+// SetUpWindow : Set up a window(canvas?) by viper
+func SetUpWindow(config *viper.Viper) *pixelgl.Window {
 	title := config.GetString("screen.title")
 	screenX := config.GetFloat64("screen.rX")
 	screenY := config.GetFloat64("screen.rY")
 	vSync := config.GetBool("screen.VSync")
 	resizable := config.GetBool("screen.resizable")
 
-	cfg := pixelgl.WindowConfig{
+	windowConfig := pixelgl.WindowConfig{
 		Title:     title,
 		Bounds:    pixel.R(0, 0, screenX, screenY),
 		Resizable: resizable,
 		VSync:     vSync,
 	}
 
-	win, err := pixelgl.NewWindow(cfg)
+	window, err := pixelgl.NewWindow(windowConfig)
 	errdef.CheckErr(err, "control/Enter", errdef.CreateWindow)
 
-	return win
+	return window
 }
 
 // SetSData : 设定 SData
-func (c *Control) SetSData(sd interface{}) {
-	c.sdata = &def.ShareData{UserData: sd}
-	c.sdata.Tool.Logger = c.logger
-	c.sdata.Tool.Config = c.config
-	c.sdata.Tool.Display = c.display
+func (ctrl *Control) SetSData(sd interface{}) {
+	ctrl.sdata = &def.ShareData{UserData: sd}
+	ctrl.sdata.Tool.Logger = ctrl.logger
+	ctrl.sdata.Tool.Config = ctrl.config
+	ctrl.sdata.Tool.Display = ctrl.display
 	if sd == nil {
-		c.logger.Warn("[control] 未定义共享数据")
+		ctrl.logger.Warn("[control] 未定义共享数据")
 	}
 }
 
-// SData : 取得 SData
-func (c *Control) SData() *def.ShareData {
-	return c.sdata
+// GetSData : 取得 SData
+func (ctrl *Control) GetSData() *def.ShareData {
+	return ctrl.sdata
 }
 
 // SetFunctions : 设置外部函数
-func (c *Control) SetFunctions(fn *Functions) {
-	c.fn = fn
+func (ctrl *Control) SetFunctions(fn *Functions) {
+	ctrl.fn = fn
 }
 
 // Init : 初始化
-func (c *Control) Init() {
-	c.fn.Ini(c)
+func (ctrl *Control) Init() {
+	ctrl.fn.Ini(c)
 }
 
 // BeforeExit : 关闭前行为（保存数据等）
-func (c *Control) BeforeExit() {
-	c.fn.Bfex(c)
+func (ctrl *Control) BeforeExit() {
+	ctrl.fn.Bfex(c)
 }
 
 // SetDebugLogger : 使用 debug 模式
-func (c *Control) SetDebugLogger() {
+func (ctrl *Control) SetDebugLogger() {
 	// 加载debug用字符集
 	debugAtlas := font.DebugAtlas()
-	c.sdata.Resource.DebugAtlas = debugAtlas
+	ctrl.sdata.Resource.DebugAtlas = debugAtlas
 
 	// 加载 debug 用屏幕显示 logger
-	locate := pixel.V(4, c.win.Bounds().H()-debugAtlas.LineHeight())
+	locate := pixel.V(4, ctrl.win.Bounds().H()-debugAtlas.LineHeight())
 	logger := text.New(locate, debugAtlas)
-	c.sdata.Tool.DebugLogger = logger
-	c.sdata.Tool.Display.PushShareFn(font.GetDebugLoggerDisplayCallBack(logger))
+	ctrl.sdata.Tool.DebugLogger = logger
+	ctrl.sdata.Tool.Display.PushShareFn(font.GetDebugLoggerDisplayCallBack(logger))
 }
 
 // Run : 运行 scenario
-func (c *Control) Run() {
-	r := def.DefaultRequest
+func (ctrl *Control) Run() {
+	req := def.DefaultRequest
 	for {
-		s, ok := c.scenarios[c.now]
-		checkScenario(ok, c.now)
+		scenario, ok := c.scenarios[c.now]
+		checkScenario(ok, ctrl.now)
 
-		initScenario(s, r, c.win)
-		r = s.Run(c.win)
+		initScenario(scenario, req, ctrl.win)
+		req = s.Run(c.win)
 
-		if r.Terminate {
+		if req.Terminate {
 			return
 		}
-		c.now = r.NextScenario
+		ctrl.now = req.NextScenario
 	}
 }
