@@ -6,9 +6,10 @@ screen:
   rX: 1024
   rY: 800
   title: Ebby
-  VSync:  False
+  vSync:  False
+  resizable: True
 
-scenario:
+scene:
   # 最高循环速率限制，以在屏幕不显示时避免高速loop导致消耗大量cpu
   # 该功能可能会使垂直同步失效
   # 单位: frames / second

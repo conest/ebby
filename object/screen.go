@@ -130,7 +130,7 @@ func (s *Screen) ScrollZoom(v float64) {
 	s.Update()
 }
 
-// ScrollZoomSteped : 补进式滚动视角缩放(推荐在IntZoom开启时使用)
+// ScrollZoomSteped : 步进式滚动视角缩放(推荐在IntZoom开启时使用)
 func (s *Screen) ScrollZoomSteped(v float64) {
 	if v == 0 {
 		return

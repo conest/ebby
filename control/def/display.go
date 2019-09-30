@@ -7,19 +7,19 @@ import (
 
 // DisplayController : 显示控制器，用于监听窗口变化等
 type DisplayController struct {
-	Win        *pixelgl.Window
-	winSize    pixel.Vec
-	shareFn    []func(pixel.Vec)
-	scenarioFn []func(pixel.Vec)
+	Win     *pixelgl.Window
+	winSize pixel.Vec
+	shareFn []func(pixel.Vec)
+	sceneFn []func(pixel.Vec)
 }
 
 // NewDisplayController : 返回新的显示控制器
 func NewDisplayController(w *pixelgl.Window) DisplayController {
 	return DisplayController{
-		Win:        w,
-		winSize:    w.Bounds().Size(),
-		shareFn:    make([]func(pixel.Vec), 0),
-		scenarioFn: make([]func(pixel.Vec), 0),
+		Win:     w,
+		winSize: w.Bounds().Size(),
+		shareFn: make([]func(pixel.Vec), 0),
+		sceneFn: make([]func(pixel.Vec), 0),
 	}
 }
 
@@ -46,22 +46,22 @@ func (d *DisplayController) callBack() {
 	for _, fn := range d.shareFn {
 		fn(d.winSize)
 	}
-	for _, fn := range d.scenarioFn {
+	for _, fn := range d.sceneFn {
 		fn(d.winSize)
 	}
 }
 
 // PushShareFn : 添加共享触发窗口变化后的回调函数
 func (d *DisplayController) PushShareFn(fn func(pixel.Vec)) {
-	d.scenarioFn = append(d.shareFn, fn)
+	d.sceneFn = append(d.shareFn, fn)
 }
 
-// PushScenarioFn : 添加 Scenario 在触发窗口变化后的回调函数
-func (d *DisplayController) PushScenarioFn(fn func(pixel.Vec)) {
-	d.scenarioFn = append(d.scenarioFn, fn)
+// PushSceneFn : 添加 Scene 在触发窗口变化后的回调函数
+func (d *DisplayController) PushSceneFn(fn func(pixel.Vec)) {
+	d.sceneFn = append(d.sceneFn, fn)
 }
 
-// ClearScenarioFn : 清除 Scenario 的回调函数
-func (d *DisplayController) ClearScenarioFn() {
-	d.scenarioFn = []func(pixel.Vec){}
+// ClearSceneFn : 清除 Scene 的回调函数
+func (d *DisplayController) ClearSceneFn() {
+	d.sceneFn = []func(pixel.Vec){}
 }

@@ -22,8 +22,8 @@ go get github.com/faiface/pixel
 // 配置入口函数
 func run() {
 	// 加载你的场景列表
-	sm := control.ScenarioMap{
-		"hello": hello.Scenario(),
+	sm := control.SceneMap{
+		"hello": hello.Scene(),
 	}
 	// 新建ebby实例并运行
 	ebby.New(sm).Run()
@@ -46,9 +46,9 @@ screen:
   rX: 1024
   rY: 800
   title: Hello World
-  VSync:  False
+  vSync:  False
 
-scenario:
+scene:
   # 最高循环速率限制，避免一些情况(关闭垂直同步；窗口最小化等)高速loop导致消耗大量cpu
   # 该功能可能会使垂直同步失效
   # 单位: frames / second
@@ -69,10 +69,10 @@ const (
 	rps = 60
 )
 
-// Scenario : 返回该实例（一般不需要修改）
-func Scenario() *scenario.Scenario {
-	i := scenario.Instance(&instance{})
-	s := scenario.New(rps, i)
+// Scene : 返回该实例（一般不需要修改）
+func Scene() *scene.Scene {
+	i := scene.SceneInstance(&instance{})
+	s := scene.New(rps, i)
 	return s
 }
 
@@ -117,14 +117,15 @@ func (i *instance) InputHandle(w *pixelgl.Window, dt float64) {}
 ```
 
 ## TODO
-- [x] 场景(Scenario)调度
+- [x] 场景(Scene)调度
 - [x] 基础Debug工具
 - [x] Logger(使用logrus)
 - [x] 基础字体加载
 - [x] 支持动画的高级sprite对象
-- [-] 按钮对象以及监听工具
+- [ ] 按钮对象以及监听工具
 - [x] 视角工具
 - [x] GLSL控制支持
-- [-] sprite图片处理工具集
-- [ ] 高级实用工具集
+- [x] sprite图片处理工具集
 - [ ] 完善中文字体加载性能问题
+- [ ] tilemap类游戏工具集
+- [ ] platformer类游戏工具集

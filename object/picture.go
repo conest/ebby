@@ -103,9 +103,11 @@ func ShiftFrames(datas []*pixel.PictureData, framesList [][]pixel.Rect) [][]pixe
 	fl := make([][]pixel.Rect, len(framesList))
 	fl[0] = make([]pixel.Rect, len(framesList[0]))
 	copy(fl[0], framesList[0])
+
 	for i := 1; i < len(datas); i++ {
 		fl[i] = make([]pixel.Rect, len(framesList[i]))
 		copy(fl[i], framesList[i])
+
 		shift := datas[i-1].Bounds().H()
 		for u := 0; u < len(fl[i]); u++ {
 			fl[i][u].Min.Y += shift

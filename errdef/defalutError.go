@@ -53,10 +53,10 @@ var (
 		Str: "图片文件读取失败",
 	}
 
-	// NoScenario :
-	NoScenario = errStruct{
-		ID:  "NoScenario",
-		Str: "无法取得对应ID的Scenario",
+	// NoScene :
+	NoScene = errStruct{
+		ID:  "NoScene",
+		Str: "无法取得对应ID的Scene",
 	}
 
 	// PictureGet :

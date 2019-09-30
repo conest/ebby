@@ -16,14 +16,14 @@ import (
 
 // Control : 控制中心
 type Control struct {
-	win       *pixelgl.Window
-	display   def.DisplayController
-	config    *viper.Viper
-	logger    *logrus.Logger
-	sdata     *def.ShareData
-	scenarios ScenarioMap
-	now       string
-	fn        *Functions
+	win     *pixelgl.Window
+	display def.DisplayController
+	config  *viper.Viper
+	logger  *logrus.Logger
+	sdata   *def.ShareData
+	scenes  SceneMap
+	now     string
+	fn      *Functions
 }
 
 // Functions : 外部加载函数
@@ -33,7 +33,7 @@ type Functions struct {
 }
 
 // New : 返回新的控制中心类
-func New(sm ScenarioMap, sd interface{}) *Control {
+func New(sm SceneMap, sd interface{}) *Control {
 	config := cfgloader.Init()
 	win := setWindow(config)
 	c := &Control{
@@ -41,11 +41,11 @@ func New(sm ScenarioMap, sd interface{}) *Control {
 		display: def.NewDisplayController(win),
 		config:  config,
 		logger:  logger.New(),
-		now:     config.GetString("scenario.entry"),
+		now:     config.GetString("scene.entry"),
 		fn:      &Functions{},
 	}
 	c.SetSData(sd)
-	c.scenarios = loadScenarios(sm, c.sdata, config)
+	c.scenes = loadScenes(sm, c.sdata, config)
 	return c
 }
 
@@ -54,7 +54,7 @@ func setWindow(config *viper.Viper) *pixelgl.Window {
 	title := config.GetString("screen.title")
 	screenX := config.GetFloat64("screen.rX")
 	screenY := config.GetFloat64("screen.rY")
-	vSync := config.GetBool("screen.VSync")
+	vSync := config.GetBool("screen.vSync")
 	resizable := config.GetBool("screen.resizable")
 
 	cfg := pixelgl.WindowConfig{
@@ -114,19 +114,26 @@ func (c *Control) SetDebugLogger() {
 	c.sdata.Tool.Display.PushShareFn(font.GetDebugLoggerDisplayCallBack(logger))
 }
 
-// Run : 运行 scenario
+// terminateScene : 结束场景
+// TODO: 切换场景后是否保留前一个场景的数据
+func (c *Control) terminateScene() {
+	c.display.ClearSceneFn()
+}
+
+// Run : 运行 scene
 func (c *Control) Run() {
 	r := def.DefaultRequest
 	for {
-		s, ok := c.scenarios[c.now]
-		checkScenario(ok, c.now)
+		s, ok := c.scenes[c.now]
+		checkScene(ok, c.now)
 
-		initScenario(s, r, c.win)
+		initScene(s, r, c.win)
 		r = s.Run(c.win)
 
 		if r.Terminate {
 			return
 		}
-		c.now = r.NextScenario
+		c.terminateScene()
+		c.now = r.NextScene
 	}
 }

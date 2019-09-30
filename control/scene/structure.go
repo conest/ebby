@@ -1,4 +1,4 @@
-package scenario
+package scene
 
 import (
 	"ebby/control/def"
@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Instance : 场景实例接口，场景数据结构由具体场景定义
-type Instance interface {
+// SceneInstance : 场景实例接口，场景数据结构由具体场景定义
+type SceneInstance interface {
 	Initial(*pixelgl.Window)
 	Excuter(DeltaTime) def.Request
 	Drawer(*pixelgl.Window, float64)
@@ -18,20 +18,20 @@ type Instance interface {
 	ResetData()
 }
 
-// Scenario :
-type Scenario struct {
+// Scene :
+type Scene struct {
 	config  *viper.Viper
 	rps     int
-	sTicker *time.Ticker // sTicker: 总 rps 限制用 ticker，用于节省 cpu
-	eTicker *time.Ticker // eTicker: 场景执行部分限制用 ticker
-	ins     Instance     // Scenario 实例
+	sTicker *time.Ticker  // sTicker: 总 rps 限制用 ticker，用于节省 cpu
+	eTicker *time.Ticker  // eTicker: 场景执行部分限制用 ticker
+	ins     SceneInstance // Scene 实例
 	sdata   *def.ShareData
 }
 
 // New :
-func New(rps int, i Instance) *Scenario {
+func New(rps int, i SceneInstance) *Scene {
 	d := time.Second / time.Duration(rps)
-	s := &Scenario{
+	s := &Scene{
 		rps:     rps,
 		eTicker: time.NewTicker(d),
 		ins:     i,
@@ -40,28 +40,28 @@ func New(rps int, i Instance) *Scenario {
 }
 
 // SetConfig : 设置公共配置文件
-func (s *Scenario) SetConfig(config *viper.Viper) {
+func (s *Scene) SetConfig(config *viper.Viper) {
 	s.config = config
 	// 设置总rps限制用ticker
-	rps := config.GetInt("scenario.maxRate")
+	rps := config.GetInt("scene.maxRate")
 	d := time.Second / time.Duration(rps)
 	s.sTicker = time.NewTicker(d)
 }
 
 // Initial : 初始化数据
-func (s *Scenario) Initial(w *pixelgl.Window) {
+func (s *Scene) Initial(w *pixelgl.Window) {
 	s.ins.Initial(w)
 }
 
 // SetData : 设置并初始化数据
-func (s *Scenario) SetData(sdata *def.ShareData) {
+func (s *Scene) SetData(sdata *def.ShareData) {
 	s.sdata = sdata
 	s.ins.SetSData(sdata)
 	s.ResetData()
 }
 
 // ResetData : 重置自定义数据
-func (s *Scenario) ResetData() {
+func (s *Scene) ResetData() {
 	s.ins.ResetData()
 }
 

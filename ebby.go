@@ -6,13 +6,13 @@ import (
 
 // Ebby : 实例定义
 type Ebby struct {
-	sm control.ScenarioMap
+	sm control.SceneMap
 	fn control.Functions
 	sd interface{}
 }
 
 // New :
-func New(sm control.ScenarioMap) *Ebby {
+func New(sm control.SceneMap) *Ebby {
 	return &Ebby{
 		sm: sm,
 		fn: control.Functions{},

@@ -1,4 +1,4 @@
-package scenario
+package scene
 
 import (
 	"ebby/control/def"
@@ -9,7 +9,7 @@ import (
 )
 
 // Run : 主运行
-func (s *Scenario) Run(w *pixelgl.Window) def.Request {
+func (s *Scene) Run(w *pixelgl.Window) def.Request {
 
 	req := def.DefaultRequest
 	dts := NewDT()
@@ -46,7 +46,7 @@ func (s *Scenario) Run(w *pixelgl.Window) def.Request {
 }
 
 // excute : 数据执行
-func (s *Scenario) excute(dts DeltaTime) def.Request {
+func (s *Scene) excute(dts DeltaTime) def.Request {
 	select {
 	case <-s.eTicker.C:
 		r := s.ins.Excuter(dts)
@@ -57,13 +57,13 @@ func (s *Scenario) excute(dts DeltaTime) def.Request {
 }
 
 // draw : 绘图
-func (s *Scenario) draw(w *pixelgl.Window, dt float64) {
+func (s *Scene) draw(w *pixelgl.Window, dt float64) {
 	s.ins.Drawer(w, dt)
 	// DEBUG: debug mode
 	s.sdata.Tool.DebugLogger.Draw(w, pixel.IM)
 }
 
 // inputHandle : 输入监听
-func (s *Scenario) inputHandle(w *pixelgl.Window, dt float64) {
+func (s *Scene) inputHandle(w *pixelgl.Window, dt float64) {
 	s.ins.InputHandle(w, dt)
 }
