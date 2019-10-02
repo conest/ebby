@@ -1,8 +1,9 @@
 package errdef
 
 import (
-	"ebby/common/logger"
 	"fmt"
+
+	"github.com/conest/ebby/common/logger"
 )
 
 type errStruct struct {

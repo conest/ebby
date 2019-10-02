@@ -1,7 +1,7 @@
 package object
 
 import (
-	"ebby/errdef"
+	"github.com/conest/ebby/errdef"
 
 	"github.com/faiface/pixel"
 )

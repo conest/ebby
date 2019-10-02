@@ -1,11 +1,11 @@
 package control
 
 import (
-	"ebby/common/cfgloader"
-	"ebby/common/font"
-	"ebby/common/logger"
-	"ebby/control/def"
-	"ebby/errdef"
+	"github.com/conest/ebby/common/cfgloader"
+	"github.com/conest/ebby/common/font"
+	"github.com/conest/ebby/common/logger"
+	"github.com/conest/ebby/control/def"
+	"github.com/conest/ebby/errdef"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -27,12 +27,13 @@ type Control struct {
 }
 
 // Functions : 外部加载函数
+// FIXME: Ini是什么（init？），Bfex又是什么（before exit？）
 type Functions struct {
 	Ini  func(*Control)
 	Bfex func(*Control)
 }
 
-// New : 返回新的控制中心类
+// New : 返回新的控制中心实例
 func New(sm SceneMap, sd interface{}) *Control {
 	config := cfgloader.Init()
 	win := setWindow(config)
@@ -49,6 +50,10 @@ func New(sm SceneMap, sd interface{}) *Control {
 	return c
 }
 
+// FIXME : 是否考虑把control做成一个class，然后把这个方法做成control的成员方法？
+// setWindow应该只更改window，而非构建新的window（从名字来看）
+
+// setWindow: 根据Viper 配置数据构造一个Window实例。
 func setWindow(config *viper.Viper) *pixelgl.Window {
 
 	title := config.GetString("screen.title")
@@ -81,7 +86,7 @@ func (c *Control) SetSData(sd interface{}) {
 	}
 }
 
-// SData : 取得 SData
+// SData : 取得 Control的 SData 实例指针
 func (c *Control) SData() *def.ShareData {
 	return c.sdata
 }
@@ -92,6 +97,8 @@ func (c *Control) SetFunctions(fn *Functions) {
 }
 
 // Init : 初始化
+// FIXME : 如果考虑OOD，这里用成员函数方法初始化实例值得商榷（先有鸡先有蛋的问题）。建议用ControlBuilder或
+// 类似的方法实现构造
 func (c *Control) Init() {
 	c.fn.Ini(c)
 }

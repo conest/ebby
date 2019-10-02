@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"ebby/control/def"
+	"github.com/conest/ebby/control/def"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"

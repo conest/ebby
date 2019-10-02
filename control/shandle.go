@@ -1,11 +1,12 @@
 package control
 
 import (
-	"ebby/control/scene"
-	"ebby/control/def"
-	"ebby/errdef"
 	"errors"
 	"fmt"
+
+	"github.com/conest/ebby/control/def"
+	"github.com/conest/ebby/control/scene"
+	"github.com/conest/ebby/errdef"
 
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/spf13/viper"

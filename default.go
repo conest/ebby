@@ -1,7 +1,7 @@
 package ebby
 
 import (
-	"ebby/control"
+	"github.com/conest/ebby/control"
 )
 
 // Init : 初始化

@@ -1,7 +1,7 @@
 package ebby
 
 import (
-	"ebby/control"
+	"github.com/conest/ebby/control"
 )
 
 // Ebby : 实例定义

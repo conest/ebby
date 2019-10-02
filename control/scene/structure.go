@@ -1,8 +1,9 @@
 package scene
 
 import (
-	"ebby/control/def"
 	"time"
+
+	"github.com/conest/ebby/control/def"
 
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/spf13/viper"

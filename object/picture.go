@@ -1,8 +1,9 @@
 package object
 
 import (
-	"ebby/errdef"
 	"image"
+
+	"github.com/conest/ebby/errdef"
 
 	// image/png : 解码png图片
 

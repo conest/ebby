@@ -1,9 +1,10 @@
 package glsl
 
 import (
-	"ebby/errdef"
 	"io/ioutil"
 	"os"
+
+	"github.com/conest/ebby/errdef"
 )
 
 // Load : 读取glsl
