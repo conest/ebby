@@ -1,9 +1,9 @@
 package game
 
 import (
-	"ebby/game/def"
-	"ebby/game/scene"
-	"ebby/system"
+	"github.com/conest/ebby/game/def"
+	"github.com/conest/ebby/game/scene"
+	"github.com/conest/ebby/system"
 	"errors"
 	"fmt"
 

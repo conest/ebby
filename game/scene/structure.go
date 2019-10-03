@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"ebby/game/def"
+	"github.com/conest/ebby/game/def"
 	"time"
 
 	"github.com/faiface/pixel/pixelgl"

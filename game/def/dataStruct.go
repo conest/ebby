@@ -1,7 +1,7 @@
 package def
 
 import (
-	"ebby/game/sys"
+	"github.com/conest/ebby/game/sys"
 
 	"github.com/faiface/pixel/text"
 	"github.com/sirupsen/logrus"

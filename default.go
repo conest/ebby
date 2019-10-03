@@ -1,7 +1,7 @@
 package ebby
 
 import (
-	"ebby/game"
+	"github.com/conest/ebby/game"
 )
 
 // Init : 初始化
