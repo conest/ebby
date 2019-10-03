@@ -22,7 +22,7 @@ go get github.com/faiface/pixel
 // 配置入口函数
 func run() {
 	// 加载你的场景列表
-	sm := control.SceneMap{
+	sm := game.SceneMap{
 		"hello": hello.Scene(),
 	}
 	// 新建ebby实例并运行

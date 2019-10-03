@@ -1,32 +1,32 @@
 package ebby
 
 import (
-	"ebby/control"
+	"ebby/game"
 )
 
 // Ebby : 实例定义
 type Ebby struct {
-	sm control.SceneMap
-	fn control.Functions
+	sm game.SceneMap
+	fn game.ExFunctions
 	sd interface{}
 }
 
 // New :
-func New(sm control.SceneMap) *Ebby {
+func New(sm game.SceneMap) *Ebby {
 	return &Ebby{
 		sm: sm,
-		fn: control.Functions{},
+		fn: game.ExFunctions{},
 	}
 }
 
 // SetInitialFunc :
-func (e *Ebby) SetInitialFunc(fn func(*control.Control)) {
+func (e *Ebby) SetInitialFunc(fn func(*game.Game)) {
 	e.fn.Ini = fn
 }
 
 // SetBeforeExitFunc :
-func (e *Ebby) SetBeforeExitFunc(fn func(*control.Control)) {
-	e.fn.Bfex = fn
+func (e *Ebby) SetBeforeExitFunc(fn func(*game.Game)) {
+	e.fn.Exi = fn
 }
 
 // SetShareData :
@@ -39,9 +39,9 @@ func (e *Ebby) Run() {
 	if e.fn.Ini == nil {
 		e.fn.Ini = defaultInitialFunc
 	}
-	if e.fn.Bfex == nil {
-		e.fn.Bfex = defaultBeforeExitFunc
+	if e.fn.Exi == nil {
+		e.fn.Exi = defaultBeforeExitFunc
 	}
 
-	control.Enter(e.sm, &e.fn, e.sd)
+	game.Enter(e.sm, &e.fn, e.sd)
 }
