@@ -1,7 +1,7 @@
 package tilemap
 
 import (
-	"github.com/faiface/pixel"
+	"github.com/conest/github.com/faiface/pixel"
 )
 
 // TileMap :

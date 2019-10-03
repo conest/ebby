@@ -1,10 +1,10 @@
 package game
 
 import (
-	"ebby/game/def"
-	"ebby/game/sys"
-	"ebby/model"
-	"ebby/system"
+	"github.com/conest/ebby/game/def"
+	"github.com/conest/ebby/game/sys"
+	"github.com/conest/ebby/model"
+	"github.com/conest/ebby/system"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -48,15 +48,15 @@ func New(sm SceneMap, sd interface{}) *Game {
 	return c
 }
 
-func setWindow(config *viper.Viper) *pixelgl.Window {
-
+// SetUpWindow : Set up a window(canvas?) by viper
+func SetUpWindow(config *viper.Viper) *pixelgl.Window {
 	title := config.GetString("screen.title")
 	screenX := config.GetFloat64("screen.rX")
 	screenY := config.GetFloat64("screen.rY")
 	vSync := config.GetBool("screen.vSync")
 	resizable := config.GetBool("screen.resizable")
 
-	cfg := pixelgl.WindowConfig{
+	windowConfig := pixelgl.WindowConfig{
 		Title:     title,
 		Bounds:    pixel.R(0, 0, screenX, screenY),
 		Resizable: resizable,
@@ -66,7 +66,7 @@ func setWindow(config *viper.Viper) *pixelgl.Window {
 	win, err := pixelgl.NewWindow(cfg)
 	system.CheckErr(err, "game/Enter", system.ErrorTable["CreateWindow"])
 
-	return win
+	return window
 }
 
 // SetSData : 设定 SData
@@ -107,7 +107,7 @@ func (c *Game) SetDebugLogger() {
 	c.sdata.Resource.DebugAtlas = debugAtlas
 
 	// 加载 debug 用屏幕显示 logger
-	locate := pixel.V(4, c.win.Bounds().H()-debugAtlas.LineHeight())
+	locate := pixel.V(4, ctrl.win.Bounds().H()-debugAtlas.LineHeight())
 	logger := text.New(locate, debugAtlas)
 	c.sdata.Tool.DebugLogger = logger
 	c.sdata.Tool.Display.PushShareFn(model.GetDebugLoggerDisplayCallBack(logger))
@@ -128,7 +128,7 @@ func (c *Game) Run() {
 		initScene(s, r, c.win)
 		r = s.Run(c.win)
 
-		if r.Terminate {
+		if req.Terminate {
 			return
 		}
 		c.terminateScene()

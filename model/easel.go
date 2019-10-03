@@ -1,7 +1,7 @@
 package model
 
 import (
-	"ebby/system"
+	"github.com/conest/ebby/system"
 
 	"github.com/faiface/pixel"
 )
