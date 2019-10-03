@@ -1,8 +1,8 @@
 package scene
 
 import (
-	"ebby/game/def"
-	"ebby/game/tool"
+	"github.com/conest/ebby/game/def"
+	"github.com/conest/ebby/game/tool"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"

@@ -1,10 +1,10 @@
 package game
 
 import (
-	"ebby/game/def"
-	"ebby/game/sys"
-	"ebby/model"
-	"ebby/system"
+	"github.com/conest/ebby/game/def"
+	"github.com/conest/ebby/game/sys"
+	"github.com/conest/ebby/model"
+	"github.com/conest/ebby/system"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"

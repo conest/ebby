@@ -1,7 +1,7 @@
 package model
 
 import (
-	"ebby/system"
+	"github.com/conest/ebby/system"
 	"image"
 	// image/png : 解码png图片
 	_ "image/png"
