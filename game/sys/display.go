@@ -7,19 +7,19 @@ import (
 
 // DisplayController : 显示控制器，用于监听窗口变化等
 type DisplayController struct {
-	Win     *pixelgl.Window
-	winSize pixel.Vec
-	shareFn []func(pixel.Vec)
-	sceneFn []func(pixel.Vec)
+	Win      *pixelgl.Window
+	winSize  pixel.Vec
+	publicFn []func(pixel.Vec)
+	sceneFn  []func(pixel.Vec)
 }
 
 // NewDisplayController : 返回新的显示控制器
-func NewDisplayController(w *pixelgl.Window) DisplayController {
+func NewDisplayController(win *pixelgl.Window) DisplayController {
 	return DisplayController{
-		Win:     w,
-		winSize: w.Bounds().Size(),
-		shareFn: make([]func(pixel.Vec), 0),
-		sceneFn: make([]func(pixel.Vec), 0),
+		Win:      win,
+		winSize:  win.Bounds().Size(),
+		publicFn: make([]func(pixel.Vec), 0),
+		sceneFn:  make([]func(pixel.Vec), 0),
 	}
 }
 
@@ -43,7 +43,7 @@ func (d *DisplayController) Update() {
 }
 
 func (d *DisplayController) callBack() {
-	for _, fn := range d.shareFn {
+	for _, fn := range d.publicFn {
 		fn(d.winSize)
 	}
 	for _, fn := range d.sceneFn {
@@ -51,9 +51,9 @@ func (d *DisplayController) callBack() {
 	}
 }
 
-// PushShareFn : 添加共享触发窗口变化后的回调函数
-func (d *DisplayController) PushShareFn(fn func(pixel.Vec)) {
-	d.sceneFn = append(d.shareFn, fn)
+// PushPublicFn : 添加共享触发窗口变化后的回调函数
+func (d *DisplayController) PushPublicFn(fn func(pixel.Vec)) {
+	d.sceneFn = append(d.publicFn, fn)
 }
 
 // PushSceneFn : 添加 Scene 在触发窗口变化后的回调函数

@@ -1,8 +1,9 @@
 package scene
 
 import (
-	"github.com/conest/ebby/game/def"
 	"time"
+
+	"github.com/conest/ebby/game/def"
 
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/spf13/viper"
@@ -11,32 +12,30 @@ import (
 // Instance : 场景实例接口，场景数据结构由具体场景定义
 type Instance interface {
 	Initial(*pixelgl.Window)
-	Excuter(DeltaTime) def.Request
+	Excuter(float64) def.Request
 	Drawer(*pixelgl.Window, float64)
 	InputHandle(*pixelgl.Window, float64)
-	SetSData(*def.ShareData)
+	SetGameData(*def.GameData)
 	ResetData()
 }
 
 // Scene :
 type Scene struct {
-	config  *viper.Viper
-	rps     int
-	sTicker *time.Ticker // sTicker: 总 rps 限制用 ticker，用于节省 cpu
-	eTicker *time.Ticker // eTicker: 场景执行部分限制用 ticker
-	ins     Instance     // Scene 实例
-	sdata   *def.ShareData
+	req      def.Request
+	dti      DeltaTime
+	config   *viper.Viper
+	sTicker  *time.Ticker // sTicker: 总 rps 限制用 ticker，用于节省 cpu
+	ins      Instance     // Scene 实例
+	gamedata *def.GameData
 }
 
 // New :
-func New(rps int, i Instance) *Scene {
-	d := time.Second / time.Duration(rps)
-	s := &Scene{
-		rps:     rps,
-		eTicker: time.NewTicker(d),
-		ins:     i,
+func New(i Instance) *Scene {
+	return &Scene{
+		req: def.DefaultRequest,
+		dti: NewDT(),
+		ins: i,
 	}
-	return s
 }
 
 // SetConfig : 设置公共配置文件
@@ -48,19 +47,19 @@ func (s *Scene) SetConfig(config *viper.Viper) {
 	s.sTicker = time.NewTicker(d)
 }
 
-// Initial : 初始化数据
-func (s *Scene) Initial(w *pixelgl.Window) {
-	s.ins.Initial(w)
-}
-
 // SetData : 设置并初始化数据
-func (s *Scene) SetData(sdata *def.ShareData) {
-	s.sdata = sdata
-	s.ins.SetSData(sdata)
+func (s *Scene) SetData(gamedata *def.GameData) {
+	s.gamedata = gamedata
+	s.ins.SetGameData(gamedata)
 	s.ResetData()
 }
 
-// ResetData : 重置自定义数据
+// IniInstance : 初始化场景 Instance
+func (s *Scene) IniInstance() {
+	s.ins.Initial(s.gamedata.Sys.Win)
+}
+
+// ResetData : 重置Instance数据
 func (s *Scene) ResetData() {
 	s.ins.ResetData()
 }
@@ -76,8 +75,8 @@ func NewDT() DeltaTime {
 	return DeltaTime{Last: time.Now()}
 }
 
-// Get : 重置自定义数据
-func (d *DeltaTime) Get() float64 {
+// Update : 刷新并返回Delta Time
+func (d *DeltaTime) Update() float64 {
 	dt := time.Since(d.Last).Seconds()
 	d.Dt = dt
 	d.Last = time.Now()

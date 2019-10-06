@@ -6,12 +6,12 @@ import (
 
 // Init : 初始化
 func defaultInitialFunc(c *game.Game) {
-	c.SData().Tool.Logger.Info("[game] Started")
+	c.GameData().Sys.Logger.Info("[game] Started")
 }
 
 // BeforeExit : 关闭前行为（保存数据等）
 func defaultBeforeExitFunc(c *game.Game) {
-	c.SData().Tool.Logger.Info("[game] Ternimated")
+	c.GameData().Sys.Logger.Info("[game] Ternimated")
 }
 
 // emptyFunc : 空函数

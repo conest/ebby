@@ -1,7 +1,7 @@
 package tilemap
 
 import (
-	"ebby/addon/common"
+	"github.com/conest/ebby/addon/common"
 
 	"github.com/faiface/pixel"
 )

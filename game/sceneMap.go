@@ -1,13 +1,13 @@
 package game
 
 import (
-	"github.com/conest/ebby/game/def"
-	"github.com/conest/ebby/game/scene"
-	"github.com/conest/ebby/system"
 	"errors"
 	"fmt"
 
-	"github.com/faiface/pixel/pixelgl"
+	"github.com/conest/ebby/game/def"
+	"github.com/conest/ebby/game/scene"
+	"github.com/conest/ebby/system"
+
 	"github.com/spf13/viper"
 )
 
@@ -15,19 +15,19 @@ import (
 type SceneMap map[string]*scene.Scene
 
 // loadScenes : 加载 Scene 列表
-func loadScenes(sm SceneMap, sdata *def.ShareData, config *viper.Viper) SceneMap {
+func loadScenes(sm SceneMap, gamedata *def.GameData, config *viper.Viper) SceneMap {
 	for _, ss := range sm {
 		ss.SetConfig(config)
-		ss.SetData(sdata)
+		ss.SetData(gamedata)
 	}
 	return sm
 }
 
 // initScene : 初始化场景
-func initScene(s *scene.Scene, r def.Request, win *pixelgl.Window) {
+func initScene(s *scene.Scene, r def.Request) {
 	if r.ResetData {
 		s.ResetData()
-		s.Initial(win)
+		s.IniInstance()
 	}
 }
 

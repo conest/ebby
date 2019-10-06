@@ -15,14 +15,14 @@ import (
 
 // Game : 游戏控制中心
 type Game struct {
-	win     *pixelgl.Window
-	display sys.DisplayController
-	config  *viper.Viper
-	logger  *logrus.Logger
-	sdata   *def.ShareData
-	scenes  SceneMap
-	now     string
-	fn      *ExFunctions
+	win      *pixelgl.Window
+	display  sys.DisplayController
+	config   *viper.Viper
+	logger   *logrus.Logger
+	gamedata *def.GameData
+	scenes   SceneMap
+	now      string
+	fn       *ExFunctions
 }
 
 // ExFunctions : 外部加载函数
@@ -31,11 +31,11 @@ type ExFunctions struct {
 	Exi func(*Game)
 }
 
-// New : 返回新的控制中心类
-func New(sm SceneMap, sd interface{}) *Game {
+// New : 返回新的Game实例
+func New(sceneMap SceneMap, publicData interface{}) *Game {
 	config := system.ViperInit()
-	win := setWindow(config)
-	c := &Game{
+	win := createWindow(config)
+	g := &Game{
 		win:     win,
 		display: sys.NewDisplayController(win),
 		config:  config,
@@ -43,12 +43,12 @@ func New(sm SceneMap, sd interface{}) *Game {
 		now:     config.GetString("scene.entry"),
 		fn:      &ExFunctions{},
 	}
-	c.SetSData(sd)
-	c.scenes = loadScenes(sm, c.sdata, config)
-	return c
+	g.SetGameData(win, publicData)
+	g.scenes = loadScenes(sceneMap, g.gamedata, config)
+	return g
 }
 
-func setWindow(config *viper.Viper) *pixelgl.Window {
+func createWindow(config *viper.Viper) *pixelgl.Window {
 
 	title := config.GetString("screen.title")
 	screenX := config.GetFloat64("screen.rX")
@@ -69,69 +69,70 @@ func setWindow(config *viper.Viper) *pixelgl.Window {
 	return win
 }
 
-// SetSData : 设定 SData
-func (c *Game) SetSData(sd interface{}) {
-	c.sdata = &def.ShareData{UserData: sd}
-	c.sdata.Tool.Logger = c.logger
-	c.sdata.Tool.Config = c.config
-	c.sdata.Tool.Display = c.display
-	if sd == nil {
-		c.logger.Warn("[game] 未定义共享数据")
+// SetGameData : 设定 GameData
+func (g *Game) SetGameData(win *pixelgl.Window, publicData interface{}) {
+	g.gamedata = &def.GameData{PublicData: publicData}
+	g.gamedata.Sys.Win = win
+	g.gamedata.Sys.Logger = g.logger
+	g.gamedata.Sys.Config = g.config
+	g.gamedata.Sys.Display = g.display
+	if publicData == nil {
+		g.logger.Warn("[game] 未定义publicData")
 	}
 }
 
-// SData : 取得 SData
-func (c *Game) SData() *def.ShareData {
-	return c.sdata
+// GameData : 取得 GameData
+func (g *Game) GameData() *def.GameData {
+	return g.gamedata
 }
 
 // SetFunctions : 设置外部函数
-func (c *Game) SetFunctions(fn *ExFunctions) {
-	c.fn = fn
+func (g *Game) SetFunctions(fn *ExFunctions) {
+	g.fn = fn
 }
 
 // Init : 初始化
-func (c *Game) Init() {
-	c.fn.Ini(c)
+func (g *Game) Init() {
+	g.fn.Ini(g)
 }
 
 // BeforeExit : 关闭前行为（保存数据等）
-func (c *Game) BeforeExit() {
-	c.fn.Exi(c)
+func (g *Game) BeforeExit() {
+	g.fn.Exi(g)
 }
 
 // SetDebugLogger : 使用 debug 模式
-func (c *Game) SetDebugLogger() {
+func (g *Game) SetDebugLogger() {
 	// 加载debug用字符集
 	debugAtlas := model.DebugAtlas()
-	c.sdata.Resource.DebugAtlas = debugAtlas
+	g.gamedata.Tool.DebugAtlas = debugAtlas
 
 	// 加载 debug 用屏幕显示 logger
-	locate := pixel.V(4, c.win.Bounds().H()-debugAtlas.LineHeight())
+	locate := pixel.V(4, g.win.Bounds().H()-debugAtlas.LineHeight())
 	logger := text.New(locate, debugAtlas)
-	c.sdata.Tool.DebugLogger = logger
-	c.sdata.Tool.Display.PushShareFn(model.GetDebugLoggerDisplayCallBack(logger))
+	g.gamedata.Tool.DebugLogger = logger
+	g.gamedata.Sys.Display.PushPublicFn(model.GetDebugLoggerDisplayCallBack(logger))
 }
 
 // terminateScene : 结束场景
-func (c *Game) terminateScene() {
-	c.display.ClearSceneFn()
+func (g *Game) terminateScene() {
+	g.display.ClearSceneFn()
 }
 
 // Run : 运行 scene
-func (c *Game) Run() {
+func (g *Game) Run() {
 	r := def.DefaultRequest
 	for {
-		s, ok := c.scenes[c.now]
-		checkScene(ok, c.now)
+		scene, ok := g.scenes[g.now]
+		checkScene(ok, g.now)
 
-		initScene(s, r, c.win)
-		r = s.Run(c.win)
+		initScene(scene, r)
+		r = scene.Run()
 
 		if r.Terminate {
 			return
 		}
-		c.terminateScene()
-		c.now = r.NextScene
+		g.terminateScene()
+		g.now = r.NextScene
 	}
 }

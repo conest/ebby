@@ -4,34 +4,34 @@ import (
 	"github.com/conest/ebby/game"
 )
 
-// Ebby : 实例定义
+// Ebby : Ebby结构定义
 type Ebby struct {
-	sm game.SceneMap
-	fn game.ExFunctions
-	sd interface{}
+	sceneMap   game.SceneMap
+	fn         game.ExFunctions
+	publicData interface{}
 }
 
-// New :
-func New(sm game.SceneMap) *Ebby {
+// New : 创建新的Ebby实例
+func New(sceneMap game.SceneMap) *Ebby {
 	return &Ebby{
-		sm: sm,
-		fn: game.ExFunctions{},
+		sceneMap: sceneMap,
+		fn:       game.ExFunctions{},
 	}
 }
 
-// SetInitialFunc :
+// SetInitialFunc : 设定Game初始化函数，将在加载整个游戏时触发
 func (e *Ebby) SetInitialFunc(fn func(*game.Game)) {
 	e.fn.Ini = fn
 }
 
-// SetBeforeExitFunc :
+// SetBeforeExitFunc : 设定Game结束函数，将在游戏退出前
 func (e *Ebby) SetBeforeExitFunc(fn func(*game.Game)) {
 	e.fn.Exi = fn
 }
 
-// SetShareData :
-func (e *Ebby) SetShareData(i interface{}) {
-	e.sd = i
+// SetPublicData : 设定公共数据，为Game的全局数据
+func (e *Ebby) SetPublicData(i interface{}) {
+	e.publicData = i
 }
 
 // Run :
@@ -43,5 +43,5 @@ func (e *Ebby) Run() {
 		e.fn.Exi = defaultBeforeExitFunc
 	}
 
-	game.Enter(e.sm, &e.fn, e.sd)
+	game.Enter(e.sceneMap, &e.fn, e.publicData)
 }

@@ -5,66 +5,57 @@ import (
 	"github.com/conest/ebby/game/tool"
 
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
 
 // Run : 主运行
-func (s *Scene) Run(w *pixelgl.Window) def.Request {
-
-	req := def.DefaultRequest
-	dts := NewDT()
+func (s *Scene) Run() def.Request {
 
 	// DEBUG: debug mode
 	// fps
-	fps := tool.NewFps(w, s.sdata.Resource.DebugAtlas)
+	win := s.gamedata.Sys.Win
+	fps := tool.NewFps(win, s.gamedata.Tool.DebugAtlas)
 
 	// 执行循环
 	for {
-		if w.Closed() {
-			req = def.Request{Terminate: true}
-			return req
+		if win.Closed() {
+			s.req = def.Request{Terminate: true}
+			return s.req
 		}
+		s.gamedata.Sys.Display.Update()
 
 		// Delta Time
-		dt := dts.Get()
+		s.dti.Update()
+		s.inputHandle()
 
-		s.sdata.Tool.Display.Update()
-		s.inputHandle(w, dt)
-
-		if r := s.excute(dts); !r.Continue {
-			req = r
-			return req
+		if r := s.excute(); !r.Continue {
+			s.req = r
+			return s.req
 		}
 
-		w.Clear(colornames.Black)
-		s.draw(w, dt)
+		win.Clear(colornames.Black)
+		s.draw()
 		fps.Update() // DEBUG: debug mode
-		w.Update()
+		win.Update()
 
 		<-s.sTicker.C
 	}
 }
 
 // excute : 数据执行
-func (s *Scene) excute(dts DeltaTime) def.Request {
-	select {
-	case <-s.eTicker.C:
-		r := s.ins.Excuter(dts)
-		return r
-	default:
-		return def.Request{Continue: true}
-	}
+func (s *Scene) excute() def.Request {
+	return s.ins.Excuter(s.dti.Dt)
 }
 
 // draw : 绘图
-func (s *Scene) draw(w *pixelgl.Window, dt float64) {
-	s.ins.Drawer(w, dt)
+func (s *Scene) draw() {
+	win := s.gamedata.Sys.Win
+	s.ins.Drawer(win, s.dti.Dt)
 	// DEBUG: debug mode
-	s.sdata.Tool.DebugLogger.Draw(w, pixel.IM)
+	s.gamedata.Tool.DebugLogger.Draw(win, pixel.IM)
 }
 
 // inputHandle : 输入监听
-func (s *Scene) inputHandle(w *pixelgl.Window, dt float64) {
-	s.ins.InputHandle(w, dt)
+func (s *Scene) inputHandle() {
+	s.ins.InputHandle(s.gamedata.Sys.Win, s.dti.Dt)
 }

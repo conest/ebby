@@ -1,8 +1,9 @@
 package tilemap
 
 import (
-	c "ebby/addon/common"
 	"math"
+
+	c "github.com/conest/ebby/addon/common"
 )
 
 // Direct4 : 4方向方位
