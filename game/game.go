@@ -3,22 +3,18 @@ package game
 import (
 	"github.com/conest/ebby/game/def"
 	"github.com/conest/ebby/game/sys"
+	"github.com/conest/ebby/game/tool"
 	"github.com/conest/ebby/model"
 	"github.com/conest/ebby/system"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/faiface/pixel/text"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 // Game : 游戏控制中心
 type Game struct {
-	win      *pixelgl.Window
-	display  sys.DisplayController
-	config   *viper.Viper
-	logger   *logrus.Logger
 	gamedata *def.GameData
 	scenes   SceneMap
 	now      string
@@ -36,15 +32,21 @@ func New(sceneMap SceneMap, publicData interface{}) *Game {
 	config := system.ViperInit()
 	win := createWindow(config)
 	g := &Game{
-		win:     win,
-		display: sys.NewDisplayController(win),
-		config:  config,
-		logger:  system.NewLogger(),
-		now:     config.GetString("scene.entry"),
-		fn:      &ExFunctions{},
+		now: config.GetString("scene.entry"),
+		fn:  &ExFunctions{},
 	}
 	g.SetGameData(win, publicData)
-	g.scenes = loadScenes(sceneMap, g.gamedata, config)
+	g.gamedata.Sys.Win = win
+	g.gamedata.Sys.Logger = system.NewLogger()
+	g.gamedata.Sys.Config = config
+	g.gamedata.Sys.Display = sys.NewDisplayController(win)
+
+	if config.GetString("mode") == "debug" {
+		g.UseDebugMode()
+	}
+
+	g.scenes = loadScenes(sceneMap, g.gamedata)
+
 	return g
 }
 
@@ -71,13 +73,13 @@ func createWindow(config *viper.Viper) *pixelgl.Window {
 
 // SetGameData : 设定 GameData
 func (g *Game) SetGameData(win *pixelgl.Window, publicData interface{}) {
-	g.gamedata = &def.GameData{PublicData: publicData}
-	g.gamedata.Sys.Win = win
-	g.gamedata.Sys.Logger = g.logger
-	g.gamedata.Sys.Config = g.config
-	g.gamedata.Sys.Display = g.display
+	g.gamedata = &def.GameData{
+		Sys:        def.Sys{},
+		Tool:       def.Tool{DebugMode: false},
+		PublicData: publicData,
+	}
 	if publicData == nil {
-		g.logger.Warn("[game] 未定义publicData")
+		g.gamedata.Sys.Logger.Warn("[game] 未定义publicData")
 	}
 }
 
@@ -101,22 +103,28 @@ func (g *Game) BeforeExit() {
 	g.fn.Exi(g)
 }
 
-// SetDebugLogger : 使用 debug 模式
-func (g *Game) SetDebugLogger() {
+// UseDebugMode : 使用 debug 模式
+func (g *Game) UseDebugMode() {
+	g.gamedata.Sys.Logger.Debug("[game] Using debug mode")
+	g.gamedata.Tool.DebugMode = true
+
 	// 加载debug用字符集
 	debugAtlas := model.DebugAtlas()
 	g.gamedata.Tool.DebugAtlas = debugAtlas
 
 	// 加载 debug 用屏幕显示 logger
-	locate := pixel.V(4, g.win.Bounds().H()-debugAtlas.LineHeight())
+	locate := pixel.V(4, g.gamedata.Sys.Win.Bounds().H()-debugAtlas.LineHeight())
 	logger := text.New(locate, debugAtlas)
 	g.gamedata.Tool.DebugLogger = logger
-	g.gamedata.Sys.Display.PushPublicFn(model.GetDebugLoggerDisplayCallBack(logger))
+	g.gamedata.Sys.Display.PushPublicFn(model.DebugLoggerDisplayCallBack(logger))
+
+	// 加载 FPS 模块
+	g.gamedata.Tool.Fps = tool.NewFps(g.gamedata.Sys.Win, debugAtlas)
 }
 
 // terminateScene : 结束场景
 func (g *Game) terminateScene() {
-	g.display.ClearSceneFn()
+	g.gamedata.Sys.Display.ClearSceneFn()
 }
 
 // Run : 运行 scene

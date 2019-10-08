@@ -5,7 +5,6 @@ func Enter(sceneMap SceneMap, fn *ExFunctions, publicData interface{}) {
 
 	game := New(sceneMap, publicData)
 	game.SetFunctions(fn)
-	game.SetDebugLogger()
 	game.Init()
 	game.Run()
 	game.BeforeExit()

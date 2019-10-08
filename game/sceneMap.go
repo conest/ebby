@@ -7,27 +7,25 @@ import (
 	"github.com/conest/ebby/game/def"
 	"github.com/conest/ebby/game/scene"
 	"github.com/conest/ebby/system"
-
-	"github.com/spf13/viper"
 )
 
 // SceneMap : Scene 列表映射 map
 type SceneMap map[string]*scene.Scene
 
 // loadScenes : 加载 Scene 列表
-func loadScenes(sm SceneMap, gamedata *def.GameData, config *viper.Viper) SceneMap {
-	for _, ss := range sm {
-		ss.SetConfig(config)
-		ss.SetData(gamedata)
+func loadScenes(sceneMap SceneMap, gamedata *def.GameData) SceneMap {
+	for _, s := range sceneMap {
+		s.SetGameData(gamedata)
+		s.ResetInstanceData()
 	}
-	return sm
+	return sceneMap
 }
 
 // initScene : 初始化场景
 func initScene(s *scene.Scene, r def.Request) {
 	if r.ResetData {
-		s.ResetData()
-		s.IniInstance()
+		s.ResetInstanceData()
+		s.InitInstance()
 	}
 }
 

@@ -2,6 +2,7 @@ package def
 
 import (
 	"github.com/conest/ebby/game/sys"
+	"github.com/conest/ebby/game/tool"
 
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/faiface/pixel/text"
@@ -26,6 +27,8 @@ type Sys struct {
 
 // Tool : 公共工具库，如 logger
 type Tool struct {
+	DebugMode   bool
 	DebugAtlas  *text.Atlas
 	DebugLogger *text.Text
+	Fps         tool.Fps
 }

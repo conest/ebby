@@ -1,9 +1,10 @@
 package model
 
 import (
-	"github.com/conest/ebby/system"
 	"io/ioutil"
 	"os"
+
+	"github.com/conest/ebby/system"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/text"
@@ -49,8 +50,8 @@ func DebugAtlas() *text.Atlas {
 	return text.NewAtlas(basicfont.Face7x13, text.ASCII)
 }
 
-// GetDebugLoggerDisplayCallBack : DebugLogger触发窗口变化后的回调函数
-func GetDebugLoggerDisplayCallBack(logger *text.Text) func(pixel.Vec) {
+// DebugLoggerDisplayCallBack : DebugLogger触发窗口变化后的回调函数
+func DebugLoggerDisplayCallBack(logger *text.Text) func(pixel.Vec) {
 	dl := logger
 	return func(winVec pixel.Vec) {
 		dl.Orig = pixel.V(4, winVec.Y-dl.LineHeight)
